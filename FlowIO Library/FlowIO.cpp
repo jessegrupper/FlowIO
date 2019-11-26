@@ -157,11 +157,11 @@ float FlowIO::_getPressureATM(){
 	  digitalWrite(_releaseValvePin,LOW);
 	}
 	void FlowIO::openPort(uint8_t portNumber){ //port #1 corresponds to _portValvePins[0], thus.
-	  if(portNumber>=0 && portNumber<_portValvePins.size())
+	  if(portNumber>=0 && portNumber<=MAXPORTS)
 	  	digitalWrite(_portValvePins[portNumber-1],HIGH); // we subtract 1 from portNumber.
 	}
 	void FlowIO::closePort(uint8_t portNumber){
-	  if(portNumber>=0 && portNumber<_portValvePins.size())	
+	  if(portNumber>=0 && portNumber<=MAXPORTS)	
 	  	digitalWrite(_portValvePins[portNumber-1],LOW);
 	}
 	void FlowIO::openAllPorts(){

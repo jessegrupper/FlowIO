@@ -17,6 +17,7 @@
 #define blueLEDpin 19
 #define redLEDpin 17
 #define powerOFFpin 16
+#define MAXPORTS 6
 
 enum unit : uint8_t{
 	PSI, HPA, ATM
@@ -26,7 +27,7 @@ class FlowIO{
 private:
 	int _portsInUse; //this can be smaller than the number of actual valves in the system.
 	uint8_t _pumpPins[2]={4,3};
-	uint8_t _portValvePins[6]={28,29,15,7,11,0}; //The last item is irrelevant in the case of mode 1. I don't need to change this array.	
+	uint8_t _portValvePins[MAXPORTS]={28,29,15,7,11,0}; //The last item is irrelevant in the case of mode 1. I don't need to change this array.	
 	uint8_t _inletValvePin;
 	uint8_t _releaseValvePin;
 	bool _inf; //inflation support
