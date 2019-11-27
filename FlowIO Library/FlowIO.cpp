@@ -156,12 +156,18 @@ float FlowIO::_getPressureATM(){
 	void FlowIO::closeReleaseValve(){
 	  digitalWrite(_releaseValvePin,LOW);
 	}
+	//For the following 2 functions, it is critical that portNumber ABSOLUTELY NEVER be 0!
+	//If it is 0, then we will be accessing the array _portValvePins[] at index -1, which 
+	//is a memory location we should never be accessing. If that memory happens to hold a 
+	//valid IO Pin, then we will be setting that pin to HIGH, which could be disastrouns!
+	//In fact, it turns out that _portValvePins[-1]=_pumpPins[1]=3 which is the pin for the
+	//second pump! 
 	void FlowIO::openPort(uint8_t portNumber){ //port #1 corresponds to _portValvePins[0], thus.
-	  if(portNumber>=0 && portNumber<=MAXPORTS)
+	  if(portNumber>0 && portNumber<=MAXPORTS)	//portNumber should NEVER NEVER NEVER be 0, else we 
 	  	digitalWrite(_portValvePins[portNumber-1],HIGH); // we subtract 1 from portNumber.
 	}
 	void FlowIO::closePort(uint8_t portNumber){
-	  if(portNumber>=0 && portNumber<=MAXPORTS)	
+	  if(portNumber>0 && portNumber<=MAXPORTS)	
 	  	digitalWrite(_portValvePins[portNumber-1],LOW);
 	}
 	void FlowIO::openAllPorts(){
