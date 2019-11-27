@@ -44,10 +44,10 @@ static char state = STOP; //stores the action state name
 char actionChar = '!'; //holds first character of message. Set default to 'stop'.
 char valveChar = '0'; //holds second character of message. Set default to 'all valves'
 char portNumberChar = '0';
-int portNumber = 0; //this holds the integer version of portNumber, which is waht we want.
+uint8_t portNumber = 0; //this holds the integer version of portNumber, which is waht we want.
 //char printBuff[50]; //buffer to be used with: sprintf(printBuff, "The time is %i", time); Serial.print(printBuff);
 
-float pPSI;
+float pressure;
 
 void setup(){  
   Serial.begin(115200);
@@ -67,15 +67,19 @@ void setup(){
   flowio.redLED(HIGH);
 }
 
+int i=0;
 void loop(){
-  if(Serial.available() >= MSG_SIZE+1){
+  if(Serial.available() >= MSG_SIZE+1){ //I tried setting it to MSG_SIZE only and I get a bad behavior.
     actionChar = (char) Serial.read();
     portNumberChar  = Serial.read(); //we need to convert this to int type.
     portNumber = portNumberChar - '0'; //converts the char to an int. '0'=48, '1'=49, etc.
     Serial.println(portNumber);
-    Serial.flush(); //Removes the "Carriage Return" and any characters after the SMG_SIZE.
+    Serial.flush(); //On the Feather, this DOES clear the input buffer! (even though on regular arduino it does not)
+    i=0;
   }
 
+  //TODO: this value must be sent from processing
+  float pMax = 18.0;
   //I can move the state machine to the library. I don't want to do this, because I can have complicated state machines
   //implemented on the device, not just this basic one. But I would like to be able to save the
   //communication protocol to the library somehow, without saving the state machine.
@@ -92,33 +96,38 @@ void loop(){
       nextState(actionChar); //This sets the state variable to one of the available states. It goes there on next iteration.
       break;
     case INFLATE:
-      (portNumber==0) ? flowio.startInflationAll() : flowio.startInflation(portNumber);
-      pPSI = flowio.getPressure();
-      Serial.println(pPSI);
+      //I need to get the pressure at the port at which I am inflating. Thus, I must read the
+      //pressure AFTER I have opend the port. 
+      (portNumber==0) ? flowio.openAllPorts() : flowio.openPort(portNumber);
+      if(flowio.getPressure()<pMax){
+        (portNumber==0) ? flowio.startInflationAll() : flowio.startInflation(portNumber);
+      }
+      pressure = flowio.getPressure();
+      Serial.println(pressure);
       nextState(actionChar);
       break;
     case INFLATE2X:
       (portNumber==0) ? flowio.startInflationAll2x() : flowio.startInflation2x(portNumber);
-      pPSI = flowio.getPressure();
-      Serial.println(pPSI);
+      pressure = flowio.getPressure();
+      Serial.println(pressure);
       nextState(actionChar);
       break; 
     case RELEASE:
       (portNumber==0) ? flowio.startReleaseAll() : flowio.startRelease(portNumber);
-      pPSI = flowio.getPressure();
-      Serial.println(pPSI);
+      pressure = flowio.getPressure();
+      Serial.println(pressure);
       nextState(actionChar);
       break; 
     case VACUUM:
       (portNumber==0) ? flowio.startVacuumAll() : flowio.startVacuum(portNumber);
-      pPSI = flowio.getPressure();
-      Serial.println(pPSI);
+      pressure = flowio.getPressure();
+      Serial.println(pressure);
       nextState(actionChar);
       break;
     case VACUUM2X:
       (portNumber==0) ? flowio.startVacuumAll2x() : flowio.startVacuum2x(portNumber);
-      pPSI = flowio.getPressure();
-      Serial.println(pPSI);
+      pressure = flowio.getPressure();
+      Serial.println(pressure);
       nextState(actionChar);
       break;   
     case POWEROFF:
@@ -137,8 +146,8 @@ void loop(){
       break;
     case SENSE:
       flowio.openPort(portNumber);
-      pPSI = flowio.getPressure();
-      Serial.println(pPSI);
+      pressure = flowio.getPressure();
+      //Serial.println(pressure);
       nextState(actionChar);
       break; 
   }
