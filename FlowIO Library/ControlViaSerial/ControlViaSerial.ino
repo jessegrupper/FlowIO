@@ -67,15 +67,12 @@ void setup(){
   flowio.redLED(HIGH);
 }
 
-int i=0;
 void loop(){
   if(Serial.available() >= MSG_SIZE+1){ //I tried setting it to MSG_SIZE only and I get a bad behavior.
     actionChar = (char) Serial.read();
     portNumberChar  = Serial.read(); //we need to convert this to int type.
     portNumber = portNumberChar - '0'; //converts the char to an int. '0'=48, '1'=49, etc.
-    Serial.println(portNumber);
     Serial.flush(); //On the Feather, this DOES clear the input buffer! (even though on regular arduino it does not)
-    i=0;
   }
 
   //TODO: this value must be sent from processing
@@ -147,7 +144,7 @@ void loop(){
     case SENSE:
       flowio.openPort(portNumber);
       pressure = flowio.getPressure();
-      //Serial.println(pressure);
+      Serial.println(pressure);
       nextState(actionChar);
       break; 
   }
