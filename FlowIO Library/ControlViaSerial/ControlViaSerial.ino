@@ -25,7 +25,6 @@
 
 #include <FlowIO.h>
 
-//#define charsInBuffer 5 //this the length of data packets
 #define MSG_SIZE 2
 #define PORTS_USED 5 //this can be (<=) NUMBER_OF_PORTS.
 #define CONFIGMODE 1 //AllPurpose
@@ -165,6 +164,3 @@ void nextState(char& actionChar){
 
   else if (actionChar=='?') state = SENSE;
 }
-//Two problems with this function are it is blocking, and this name I cannot use for having more than one port at a time.
-//I should not care about the name because I can always change it later if I find something better. I also should not worry
-//about it being blocking because anyone can still implement an advanced operation using the driver functions in the library. 
