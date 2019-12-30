@@ -7,22 +7,30 @@
 	//global variables (which we define with _underscore by convention) which have a scope not limited to the consturctor.
 	//NOTE(2): There is a much more fundamental reason we need the these global member variables, and that has to do with
 	//how they are stored in memory. When we create a member variable, a pointer is created that points to that variable. 
-	FlowIO::FlowIO(){}
-	FlowIO::FlowIO(uint8_t portsInUse, uint8_t config){
+	FlowIO::FlowIO(){
+		_portsInUse = 5;	
+		_setConfigMode(ALL_PURPOSE);
+	}
+	FlowIO::FlowIO(uint8_t portsInUse){
 		_portsInUse = portsInUse;	
-		_setConfigMode(config);	
+		_setConfigMode(ALL_PURPOSE);	
+	}
+	FlowIO::FlowIO(uint8_t portsInUse, configuration mode){
+		_portsInUse = portsInUse;	
+		_setConfigMode(mode);	
 	}
 
 //Hardware Configuration Mode
-void FlowIO::_setConfigMode(uint8_t mode){
-	if(mode==1){ //AllPurpose
+	//pin5=leftmost valve, pin30=rightmost valve
+void FlowIO::_setConfigMode(configuration mode){
+	if(mode==ALL_PURPOSE){ //AllPurpose
 		_inf=true;
 		_vac=true;
-		_inletValvePin=5;
-		_releaseValvePin=30;
+		_inletValvePin=30;
+		_releaseValvePin=5;
 		_portValvePins[5]=0; //seting 6th element of the array to 0
 	}
-	else if(mode==2){	//DualInflation (Direct to manifold connection)
+	else if(mode==INFLATIONPP){	//DualInflation (Direct to manifold connection)
 		_inf=true;
 		_vac=false;
 		_inletValvePin=0; //no inlet valve
@@ -325,22 +333,6 @@ float FlowIO::_getPressureATM(){
 			}
 		}	
 	}
-	//If we ever need a function that can do inflation or vacuum depending on the argument passed to it, this is 
-	//how we would define it.:
-	// void FlowIO::xflate(bool inflate, int portNumber, int millisec){
-	// 	if(millisec>0){
-	// 		if(inflate){
-	// 			startInflation(portNumber);
-	// 			delay(millisec);
-	// 			stopAction(portNumber);
-	// 		}
-	// 		else if(!inflate){
-	// 			startVacuum(portNumber);
-	// 			delay(millisec);
-	// 			stopAction(portNumber);
-	// 		}
-	// 	}
-	// }
 	void FlowIO::inflateAllT(int millisec){ //inflates all valves simultaneously.
 		if(_inf==true){
 			if(millisec>0){		
@@ -366,49 +358,6 @@ float FlowIO::_getPressureATM(){
 			}
 		}
 	}
-	// void FlowIO::inflateAllWithAdjustments(int millisecAll){
-	// 	//TODO: Each adjustment value should be expressed as a percentage of millisecAll, thus the function should 
-	// 	//have just one parameter.
-	// 	closeReleaseValve();
-	// 	startPump(1);
-	// 	openAllPorts();
-	// 	delay(millisecAll);
-	// 	for(int i=0; i < _portsInUse; i++){
-	// 		closePort(i+1);
-	// 		delay(millisecAll*0.1);
-	// 	}
-	// 	stopPump(1);
-	// }
-
-	// void FlowIO::inflateAllWithAdjustments(int millisecAll, int millisecExtra[]){
-	// 	closeReleaseValve();
-	// 	startPump(1);
-	// 	openAllPorts();
-	// 	delay(millisecAll);
-	// 	for(int i=0; i < _portsInUse; i++){
-	// 		closePort(i+1);
-	// 		delay(millisecExtra[i]);
-	// 	}
-	// 	stopPump(1);
-	// }
-
-	// //TODO: Make this function nonblocking
-	// void FlowIO::stopActionAllSequentially(int millisecAll){ //parameter specifies the amount of time they were xflated
-	// 	closeReleaseValve();
-	// 	for(int i=0; i < _portsInUse; i++){
-	// 		closePort(i+1); //close the first valve, then wait for 10%*Elapsed time to close the next. But don't wait after the last valve.
-	// 		if(i < (_portsInUse-1)) delay(millisecAll*0.1); 
-	// 	}
-	// 	stopPump(1);
-	// }
-
-	// void FlowIO::stopXflatingAllSequentiallyNonblocking(int millisecAll){
-	// 	int currenttime=millis();
-	// 	while()
-	// 	for(int i=0; i< _numberOfPortValvesInUse; i++){
-	// 		closePort(i+1);
-	// 	}
-	// }
 
 	//API: Presure Dependent Methods (BLOCKING)
 	

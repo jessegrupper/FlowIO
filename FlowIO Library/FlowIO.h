@@ -22,18 +22,21 @@
 enum unit : uint8_t{
 	PSI, HPA, ATM
 };
+enum configuration : uint8_t{ //pneumatic configuration mode
+	ALL_PURPOSE, INFLATIONPP, VACUUMPP
+};
 
 class FlowIO{
 private:
 	int _portsInUse; //this can be smaller than the number of actual valves in the system.
-	uint8_t _pumpPins[2]={4,3};
+	uint8_t _pumpPins[2]={3,4};
 	uint8_t _portValvePins[MAXPORTS]={28,29,15,7,11,0}; //The last item is irrelevant in the case of mode 1. I don't need to change this array.	
 	uint8_t _inletValvePin;
 	uint8_t _releaseValvePin;
 	bool _inf; //inflation support
 	bool _vac; //vacuum support
-	void _setConfigMode(uint8_t mode); 	
-
+	void _setConfigMode(configuration mode); 	
+	//void _setConfigMode(uint8_t mode);
 	uint8_t _addr = 0x18;
     TwoWire *_i2c;   
     uint8_t statusByte;
@@ -45,8 +48,9 @@ private:
     unit _pressureUnit=PSI;
 public:	
 	//constructors
-	FlowIO();
-	FlowIO(uint8_t portsInUse, uint8_t config);	
+	FlowIO();//default where mode=GENERAL_PURPOSE, ports=5
+	FlowIO(uint8_t portsInUse);
+	FlowIO(uint8_t portsInUse, configuration mode);	
 
 	//DRIVER: functions to control individual elements
 	bool 	activateSensor();
@@ -100,11 +104,6 @@ public:
 	//API: Presure Dependent Methods
 	void inflateP(uint8_t portNumber, float pMax, unit pUnit);
 
-
-	// //API: Functions that try to compensate for differences in inflation rates between valves
-	// void inflateAllWithAdjustments(int millisecAll, int millisecExtra[]);	
-	// void inflateAllWithAdjustments(int millisecAll);
-	// void stopActionAllSequentially(int millisecAll); //parameter is the time spend in the prevoius state in the xflation state immediately before.
 };
 
 #endif
