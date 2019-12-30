@@ -1,6 +1,5 @@
 
 
-
 /*Controlling Pneumatics Driver Board via Serial. 
  *This firmware controls one valve at a time, or all valves simultaneously.  
  *There is NO algorithm in this code to prevent overinflation and bursting.
@@ -26,9 +25,6 @@
 #include <FlowIO.h>
 
 #define MSG_SIZE 2
-#define PORTS_USED 5 //this can be (<=) NUMBER_OF_PORTS.
-#define CONFIGMODE 1 //AllPurpose
-
 
 //Action states. Enums hold consecutive integers starting from 0 by default. 
 enum State : uint8_t{ //if we don't set the type it would default to 'int'.
@@ -43,7 +39,7 @@ static char state = STOP; //stores the action state name
 char actionChar = '!'; //holds first character of message. Set default to 'stop'.
 char valveChar = '0'; //holds second character of message. Set default to 'all valves'
 char portNumberChar = '0';
-uint8_t portNumber = 0; //this holds the integer version of portNumber, which is waht we want.
+uint8_t portNumber = 0; //this holds the integer version of portNumber, which is what we want.
 //char printBuff[50]; //buffer to be used with: sprintf(printBuff, "The time is %i", time); Serial.print(printBuff);
 
 float pressure;
@@ -51,7 +47,7 @@ float pressure;
 void setup(){  
   Serial.begin(115200);
   while (!Serial) delay(10);   // for nrf52840 with native usb 
-  flowio = FlowIO(PORTS_USED,CONFIGMODE);
+  flowio = FlowIO();
   flowio.setPressureUnit(PSI);
   if (flowio.activateSensor()==false){
     while(1){
