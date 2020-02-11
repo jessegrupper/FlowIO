@@ -50,8 +50,8 @@ int portNumber = 0; //this holds the integer version of portNumber, which is wha
 
 //poweroff timer
 int offTimerStart = millis();
-//int offTimer = millis() - offTimerStart
-//if(millis() - offTimerStart > 5000) powerOff();
+bool remaining1minute=false;
+bool remaining2minute=false;
 
 //battery percentage
 int bPer = 0; 
@@ -140,8 +140,7 @@ void loop(){
   // Convert from raw mv to percentage (based on LIPO chemistry)
   uint8_t vbat_per = mvToPercent(vbat_raw * VBAT_MV_PER_LSB);
   // checks to see if the battery percentage has changed, if it has it notifies the central
-  if (bPer != vbat_per) {
-      Serial.println("Changed");
+  if (bPer > vbat_per+5 || bPer < vbat_per-5) { //don't report anything if the change is within just 5 percent.
       blebas.notify(vbat_per);
       bPer = vbat_per;
   }
@@ -159,6 +158,7 @@ void loop(){
     actionChar = (char) bleuart.read(); //read the 1st char
     portNumberChar  = bleuart.read();         //read the 2nd char
     portNumber = portNumberChar - '0'; //convert the char to an int. '0'=48, '1'=49, etc.  
+    Serial.print(actionChar);
     Serial.println(portNumber);
     bleuart.flush();        
   }
@@ -196,7 +196,8 @@ void loop(){
       break;
   }
   waitForEvent();  // Request CPU to enter low-power mode until an event/interrupt occurs
-  powerOffIfInactiveFor(10000);
+  autoPowerOff(3); //argument is the number of minutes of inactivity.
+  //powerOffIfDisconnectedMinutes(2);
 
   //If the state has not changed or if the device has not been connected, then power it off after 1 minute. Alternatively, whenever there is 
   //a user event taking place, I can reset the poweroff timer. The following are condidered events:
@@ -217,11 +218,24 @@ void setState(char actionChar){
   else if (actionChar=='r') state = RED;
   else if (actionChar=='?') state = SENSE;
 }
-void powerOffIfInactiveFor(int inactiveTime){
-  if(millis() - offTimerStart > inactiveTime){
+
+
+void autoPowerOff(int minutes){
+  int remainingtime=minutes-(millis() - offTimerStart)/60000;
+  if(millis() - offTimerStart > minutes*60000){
     offTimerStart = millis(); //reset it. This is useful in case of a hardware failure and power is not cut off properly.
     Serial.println("Powering off");
+    flowio.powerOFF();
   }
+  else if(remainingtime==1 && remaining1minute==false){
+    Serial.println("Powering off in 1 minute");  
+    remaining1minute=true;
+  }
+  else if(remainingtime==2 && remaining2minute==false){
+    Serial.println("Powering off in 2 minutes");  
+    remaining2minute=true;
+  }
+  
 }
 void resetOffTimer(){
   offTimerStart = millis();
