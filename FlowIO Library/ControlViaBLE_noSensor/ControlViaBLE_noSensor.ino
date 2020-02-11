@@ -163,50 +163,36 @@ void loop(){
     bleuart.flush();        
   }
 
+  setState(actionChar);
+    
   switch(state){ 
     case STOP:
       (portNumber==0) ? flowio.stopActionAll() : flowio.stopAction(portNumber); 
-      //pressure = flowio.getPressure();
-      nextState(actionChar);
       break;
     case INFLATE:
       (portNumber==0) ? flowio.startInflationAll() : flowio.startInflation(portNumber);
-      //pressure = flowio.getPressure();
-      nextState(actionChar);
       break;
     case INFLATE2X:
       (portNumber==0) ? flowio.startInflationAll2x() : flowio.startInflation2x(portNumber);
-      //pressure = flowio.getPressure();
-      nextState(actionChar);
       break; 
     case RELEASE:
       (portNumber==0) ? flowio.startReleaseAll() : flowio.startRelease(portNumber);
-      //pressure = flowio.getPressure();
-      nextState(actionChar);
       break; 
     case VACUUM:
       (portNumber==0) ? flowio.startVacuumAll() : flowio.startVacuum(portNumber);
-      //pressure = flowio.getPressure();
-      nextState(actionChar);
       break;
     case VACUUM2X:
       (portNumber==0) ? flowio.startVacuumAll2x() : flowio.startVacuum2x(portNumber);
-      //pressure = flowio.getPressure();
-      nextState(actionChar);
       break;   
     case POWEROFF:
       flowio.powerOFF();
-      nextState(actionChar);
       break;
     case RED: //toggle red led
       ledstate=!ledstate;
       flowio.redLED(ledstate);
-      nextState(actionChar);
       break;
     case SENSE:
       flowio.openPort(portNumber);
-      //pressure = flowio.getPressure();
-      nextState(actionChar);
       break;
   }
   waitForEvent();  // Request CPU to enter low-power mode until an event/interrupt occurs
@@ -219,7 +205,7 @@ void loop(){
       //disconnect event occurs.
 }
 
-void nextState(char actionChar){
+void setState(char actionChar){
   if      (actionChar=='!') state = STOP;
   else if (actionChar=='+') state = INFLATE;
   else if (actionChar=='P') state = INFLATE2X;
@@ -229,7 +215,7 @@ void nextState(char actionChar){
   
   else if (actionChar=='o') state = POWEROFF;
   else if (actionChar=='r') state = RED;
-  //else if (actionChar=='?') state = SENSE;
+  else if (actionChar=='?') state = SENSE;
 }
 void powerOffIfInactiveFor(int inactiveTime){
   if(millis() - offTimerStart > inactiveTime){
