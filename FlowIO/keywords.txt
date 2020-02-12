@@ -1,0 +1,70 @@
+FlowIO	KEYWORD1
+
+activateSensor	KEYWORD2
+setPressureUnit	KEYWORD2
+getPressure		KEYWORD2
+HPA				KEYWORD4
+PSI				KEYWORD4
+ATM				KEYWORD4
+
+
+
+startPump			KEYWORD2
+stopPump			KEYWORD2
+openInletValve		KEYWORD2
+closeInletValve		KEYWORD2
+openOutletValve		KEYWORD2
+closeOutletValve	KEYWORD2
+openReleaseValve	KEYWORD2
+closeReleaseValve	KEYWORD2
+openPort			KEYWORD2
+closePort			KEYWORD2
+openAllPorts		KEYWORD2
+closeAllPorts		KEYWORD2
+
+getSystemPressurePsi KEYWORD2
+getSystemPressureAtm KEYWORD2
+
+startInflation		KEYWORD2
+startInflation2x	KEYWORD2
+startVacuum			KEYWORD2
+startVacuum2x		KEYWORD2
+startRelease		KEYWORD2
+stopAction			KEYWORD2
+startInflationAll	KEYWORD2
+startInflationAll2x	KEYWORD2
+startVacuumAll		KEYWORD2
+startVacuumAll2x	KEYWORD2
+startReleaseAll		KEYWORD2
+stopActionAll		KEYWORD2
+
+inflateMs			KEYWORD2
+inflate2xMs			KEYWORD2
+vacuumMs			KEYWORD2
+vacuum2xMs			KEYWORD2
+releaseMs 			KEYWORD2
+inflateAllMs		KEYWORD2
+inflateAll2xMs		KEYWORD2
+vacuumAllMs			KEYWORD2
+vacuumAll2xMs		KEYWORD2
+releaseAllMs		KEYWORD2
+
+inflatePsi			KEYWORD2
+inflate2xPsi		KEYWORD2
+vacuumPsi			KEYWORD2
+vacuum2xPsi			KEYWORD2
+releasePsi			KEYWORD2
+inflateAllPsi		KEYWORD2
+inflateAll2xPsi		KEYWORD2
+vacuumAllPsi		KEYWORD2
+vacuumAll2xPsi		KEYWORD2
+releaseAllPsi		KEYWORD2
+
+inflateAllWithAdjustments	KEYWORD2
+stopXflatingAllSequentially	KEYWORD2
+
+
+
+
+
+
