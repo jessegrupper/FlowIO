@@ -23,6 +23,14 @@
 #include <bluefruit.h>
 #include <FlowIO.h>
 
+//battery percentage (https://hutscape.com/tutorials/measure-battery-nrf52)
+#define VBAT_PIN          (A7)
+#define VBAT_MV_PER_LSB   (0.73242188F)   // 3.0V ADC range and 12-bit ADC resolution = 3000mV/4096
+#define VBAT_DIVIDER      (0.71275837F)   // 2M + 0.806M voltage divider on VBAT = (2M / (0.806M + 2M))
+#define VBAT_DIVIDER_COMP (1.403F)        // Compensation factor for the VBAT divider
+int bPer = 0; 
+
+
 //#define charsInBuffer 5 //this is the length of data packets
 #define MSG_SIZE 2
 
@@ -31,11 +39,11 @@ enum State : uint8_t{ //if we don't set the type it would default to 'int'.
   STOP, INFLATE, INFLATE2X, RELEASE, VACUUM, VACUUM2X, SENSE, POWEROFF, RED, BLUE
 };
 
-BLEDis  bledis;  // device information
-BLEUart bleuart; // uart over ble
+BLEDis  deviceInfoService; //// device information
+BLEUart uartService; // uart over ble
 //There is a BLE batter service, defined by Adafruit, which we can just use.
 //All service libraries: C:\Users\Ali\AppData\Local\Arduino15\packages\adafruit\hardware\nrf52\0.14.0\libraries\Bluefruit52Lib\src\services
-BLEBas  blebas;  // battery service
+BLEBas  batteryService;  // battery service
 
 bool ledstate=1;
 float pressure=0.0;
@@ -54,27 +62,12 @@ int offTimerStart = millis();
 bool remaining1minute=false;
 bool remaining2minute=false;
 
-//battery percentage
-int bPer = 0; 
-#define VBAT_PIN          (A7)
-#define VBAT_MV_PER_LSB   (0.73242188F)   // 3.0V ADC range and 12-bit ADC resolution = 3000mV/4096
-#define VBAT_DIVIDER      (0.71275837F)   // 2M + 0.806M voltage divider on VBAT = (2M / (0.806M + 2M))
-#define VBAT_DIVIDER_COMP (1.403F)        // Compensation factor for the VBAT divider
 
 //function to read raw battery value from A7
 int readVBAT(void) {
   int raw;
-  // Set the analog reference to 3.0V (default = 3.6V)
-  analogReference(AR_INTERNAL_3_0);
-  // Set the resolution to 12-bit (0..4095)
-  analogReadResolution(12); // Can be 8, 10, 12 or 14
-  // Let the ADC settle
-  delay(2);
-  // Get the raw 12-bit, 0..3000mV ADC value
-  raw = analogRead(VBAT_PIN);
-  // Set the ADC back to the default settings
-  analogReference(AR_DEFAULT);
-  analogReadResolution(10);
+  delay(2);   // Let the ADC settle
+  raw = analogRead(VBAT_PIN);   // Get the raw 12-bit, 0..3000mV ADC value
   return raw;
 }
 
@@ -94,13 +87,10 @@ void setup(){
   Serial.begin(115200);
   while (!Serial) delay(10);   // for nrf52840 with native usb
   flowio = FlowIO();
-//  while(flowio.activateSensor()==false){
-//    flowio.redLED(HIGH);
-//    delay(50);
-//  }
   flowio.redLED(LOW);
-  //flowio.setPressureUnit(PSI);
-  
+
+  analogReference(AR_INTERNAL_3_0);   // Set the analog reference to 3.0V (default = 3.6V)
+  analogReadResolution(12);   // Set the resolution to 12-bit (0..4095). Can be 8, 10, 12 or 14
   readVBAT(); // Get a single ADC sample and throw it away  
   Bluefruit.autoConnLed(true);   // Setup the BLE LED to be enabled on CONNECT
   //All config***() function must be called before begin()
@@ -111,15 +101,14 @@ void setup(){
   Bluefruit.Periph.setConnectCallback(connect_callback);
   Bluefruit.Periph.setDisconnectCallback(disconnect_callback);
 
-  bledis.setManufacturer("Ali");
-  bledis.setModel("OTA Control 1");
-  bledis.begin();
+  deviceInfoService.setManufacturer("Ali");
+  deviceInfoService.setModel("OTA Control 1");
+  deviceInfoService.begin();
 
-  bleuart.begin();   // Configure and Start BLE Uart Service
+  uartService.begin();   // Configure and Start BLE Uart Service
 
   // Start BLE Battery Service
-  blebas.begin();    
-  blebas.write(100);
+  batteryService.begin();    
 
   startAdv();   // Set up and start advertising
 }
@@ -127,7 +116,7 @@ void setup(){
 void startAdv(void){
   Bluefruit.Advertising.addFlags(BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE);   // Advertising packet
   Bluefruit.Advertising.addTxPower();
-  Bluefruit.Advertising.addService(bleuart);   // Include bleuart 128-bit uuid
+  Bluefruit.Advertising.addService(uartService);   // Include uartService 128-bit uuid
   Bluefruit.ScanResponse.addName();   // Secondary Scan Response packet (optional)
   Bluefruit.Advertising.restartOnDisconnect(true);
   Bluefruit.Advertising.setInterval(32, 244);    // in unit of 0.625 ms
@@ -142,7 +131,7 @@ void loop(){
   uint8_t vbat_per = mvToPercent(vbat_raw * VBAT_MV_PER_LSB);
   // checks to see if the battery percentage has changed, if it has it notifies the central
   if (bPer > vbat_per+5 || bPer < vbat_per-5) { //don't report anything if the change is within just 5 percent.
-      blebas.notify(vbat_per);
+      batteryService.notify(vbat_per);
       bPer = vbat_per;
   }
   
@@ -151,13 +140,13 @@ void loop(){
     //delay(2);  // Delay to wait for enough input, since we have a limited transmission buffer
     uint8_t buf[20];
     int count = Serial.readBytes(buf, sizeof(buf));
-    bleuart.write(buf,count);
+    uartService.write(buf,count);
   }
   //This is for reading data that has been sent to the chip.
-  if(bleuart.available() >= MSG_SIZE){ 
+  if(uartService.available() >= MSG_SIZE){ 
     resetOffTimer(); 
-    actionChar = bleuart.read(); //read the 1st char
-    portNumberChar  = bleuart.read();         //read the 2nd char
+    actionChar = uartService.read(); //read the 1st char
+    portNumberChar  = uartService.read();         //read the 2nd char
     portNumber = portNumberChar - '0'; //convert the char to an int. '0'=48, '1'=49, etc.  
     
     Serial.println("Accii DEC Code ...");
@@ -169,8 +158,8 @@ void loop(){
   //But then if someone sends 2 numbers
   //I want to eventually have a 3-character protocol, so I will certainly need to modify how I am parsing the data. Clearly this way of parsing is bad. 
   //I can look online for how others have solved this problem if I don't find a good solution myself.
-//  if(bleuart.available()){
-//    mychar = bleuart.read() //this reads the ascii value, rather than a char
+//  if(uartService.available()){
+//    mychar = uartService.read() //this reads the ascii value, rather than a char
 //  }
 
   setState(actionChar);
@@ -263,7 +252,7 @@ void connect_callback(uint16_t conn_handle){ // callback invoked when central co
   int vbat_raw = readVBAT();
   uint8_t vbat_per = mvToPercent(vbat_raw * VBAT_MV_PER_LSB);
   //Notifies central of battery percentage
-  blebas.notify(vbat_per);
+  batteryService.notify(vbat_per);
 }
 void disconnect_callback(uint16_t conn_handle, uint8_t reason){ //// callback invoked when connection dropped
   (void) conn_handle; //conn_handle connection where this event happens
@@ -271,7 +260,7 @@ void disconnect_callback(uint16_t conn_handle, uint8_t reason){ //// callback in
   Serial.println("\n Disconnected");
   Serial.println("Closing all valves and pumps");
   flowio.stopActionAll();
-  bleuart.flush(); //clear the buffer if connection is dropped, so no other commands are executed after disconnect.
+  uartService.flush(); //clear the buffer if connection is dropped, so no other commands are executed after disconnect.
   resetInitialConditions();
 }
 
