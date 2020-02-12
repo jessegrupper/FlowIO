@@ -35,11 +35,11 @@ void setup() {
   //Once relased, the inflation should stop. If I want to inflate it more, i press it again. 
   //############################################################################################
   cp5.addButton("+1").setPosition(200,100).setSize(80,80)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write('1'); myPort.write('+'); myPort.write('1');}}) //If I don't send the same command twice, then the FlowIO behaves in unintended way. Maybe something is bad with the FlowIO embedded code.
-    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('1'); myPort.write('!'); myPort.write('1');}});
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write('1');}}) //If I don't send the same command twice, then the FlowIO behaves in unintended way. Maybe something is bad with the FlowIO embedded code.
+    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('1');}});
   cp5.addButton("+2").setPosition(300,100).setSize(80,80)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write('2'); myPort.write('+'); myPort.write('2');}})
-    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('2'); myPort.write('!'); myPort.write('2');}});
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write('2');}})
+    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('2');}});
   cp5.addButton("+3").setPosition(400,100).setSize(80,80)
     .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write('3');}})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('3');}});
