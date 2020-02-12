@@ -117,27 +117,12 @@ void bleuart_rx_callback(BLEClientUart& uart_svc){ //invoked when uart data is r
 
 void loop(){
   if(Bluefruit.Central.connected()){    
-      //delay(2);
-      if(Serial.available() >= MSG_SIZE+1){ //I should specify the action character to be one of the known characters only using a case block.
-        actionChar = (char) Serial.read();
-        portNumberChar  = (char) Serial.read();
-        //if(actionChar=='+') transmit('+','1');
-        //else if(actionChar=='-') transmit('-','1');
-        //transmit('+','1');
+      if(Serial.available() >= MSG_SIZE){ //I should specify the action character to be one of the known characters only using a case block.
+        actionChar = Serial.read();
+        portNumberChar  = Serial.read();
         transmit(actionChar, portNumberChar);
         Serial.flush(); //On the Feather, this DOES clear the input buffer! (even though on regular arduino it does not)
       }
-      //else transmit('!','0');
-
-
-//      while (Serial.available()){
-//        delay(2); 
-//        uint8_t buf[20] = { 0 };
-//        int count = Serial.readBytes(buf, sizeof(buf));
-//        Serial.println(count);
-//        bleclientuart.write(buf,count);
-//        Serial.write(buf,count);
-//      }
   }
   waitForEvent();
 }
