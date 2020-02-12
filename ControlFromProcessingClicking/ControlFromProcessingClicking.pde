@@ -19,7 +19,7 @@ int c1,c2;
 float n,n1;
 
 void setup() {
-  size(1500,1200);
+  size(1200,1200);
   String portName = Serial.list()[0];
   myPort = new Serial(this, portName, 115200);
     
@@ -49,12 +49,12 @@ void setup() {
   cp5.addButton("+5").setPosition(600,100).setSize(80,80)
     .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write('5');}})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('5');}});
-  cp5.addButton("+ALL").setPosition(900,100).setSize(80,80)
+  cp5.addButton("+ALL").setPosition(800,100).setSize(80,80)
     .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write('0');}})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('0');}});
   cp5.addSlider("PSI")  
      .setRange(15, 20)
-     .setPosition(1100, 120)
+     .setPosition(900, 120)
      .setSize(250, 40)
      ; 
   
@@ -73,7 +73,7 @@ void setup() {
   cp5.addButton("-5").setPosition(600,250).setSize(80,80)
     .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('-'); myPort.write('5');}})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('5');}});
-  cp5.addButton("-ALL").setPosition(900,250).setSize(80,80)
+  cp5.addButton("-ALL").setPosition(800,250).setSize(80,80)
     .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('-'); myPort.write('0');}})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('0');}});
   
@@ -84,7 +84,7 @@ void setup() {
   cp5.addButton("^3").setPosition(400,400).setSize(80,80);
   cp5.addButton("^4").setPosition(500,400).setSize(80,80);
   cp5.addButton("^5").setPosition(600,400).setSize(80,80);
-  cp5.addButton("^ALL").setPosition(900,400).setSize(80,80);
+  cp5.addButton("^ALL").setPosition(800,400).setSize(80,80);
   
   cp5.addButton("?1").setPosition(200,550).setSize(80,80);
   cp5.addButton("?2").setPosition(300,550).setSize(80,80);
@@ -111,7 +111,7 @@ void setup() {
   cp5.addButton("Blue LED19").setPosition(160,0).setSize(150,40);
   cp5.addButton("Red LED17").setPosition(320,0).setSize(150,40);
   cp5.addButton("Pressure").setPosition(480,0).setSize(150,40);
-  cp5.addButton("Value").setPosition(850,0).setSize(150,40);
+  cp5.addButton("Value").setPosition(750,0).setSize(150,40);
   
   //############################################################################################   
 }
