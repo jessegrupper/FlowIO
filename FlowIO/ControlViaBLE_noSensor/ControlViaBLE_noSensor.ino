@@ -41,6 +41,7 @@ bool ledstate=1;
 float pressure=0.0;
 
 FlowIO flowio;
+
 static char state = STOP; //stores the action state name
 char actionChar = '!'; //holds first character of message. Set default to 'stop'.
 char valveChar = '0'; //holds second character of message. Set default to 'all valves'
@@ -246,11 +247,6 @@ void autoPowerOff(int minutes){
   }
   
 }
-void resetOffTimer(){
-  offTimerStart = millis();
-  remaining1minute=false;
-  remaining2minute=false;
-}
 
 void connect_callback(uint16_t conn_handle){ // callback invoked when central connects
   // Get the reference to current connection
@@ -260,7 +256,7 @@ void connect_callback(uint16_t conn_handle){ // callback invoked when central co
   connection->getPeerName(central_name, sizeof(central_name));
   Serial.print("Connected to ");
   Serial.println(central_name);
-  resetOffTimer();
+  resetInitialConditions();
 
 
   //gets raw battery value
@@ -276,5 +272,19 @@ void disconnect_callback(uint16_t conn_handle, uint8_t reason){ //// callback in
   Serial.println("Closing all valves and pumps");
   flowio.stopActionAll();
   bleuart.flush(); //clear the buffer if connection is dropped, so no other commands are executed after disconnect.
+  resetInitialConditions();
+}
+
+void resetInitialConditions(){
+  state = STOP;
+  actionChar = '!';
+  valveChar = '0';
+  portNumberChar = '0';
+  portNumber = 0; 
   resetOffTimer();
+}
+void resetOffTimer(){
+  offTimerStart = millis();
+  remaining1minute=false;
+  remaining2minute=false;
 }
