@@ -155,13 +155,22 @@ void loop(){
   //This is for reading data that has been sent to the chip.
   if(bleuart.available() >= MSG_SIZE){ 
     resetOffTimer(); 
-    actionChar = (char) bleuart.read(); //read the 1st char
+    actionChar = bleuart.read(); //read the 1st char
     portNumberChar  = bleuart.read();         //read the 2nd char
     portNumber = portNumberChar - '0'; //convert the char to an int. '0'=48, '1'=49, etc.  
-    Serial.print(actionChar);
-    Serial.println(portNumber);
-    bleuart.flush();        
+    
+    Serial.println("Accii DEC Code ...");
+    Serial.println(actionChar, DEC);
+    Serial.println(portNumberChar, DEC);
   }
+
+  //I want to ensure that the numeric character is always preceded by a state character. Whenever I receive a state character, I can set the number to 9. 
+  //But then if someone sends 2 numbers
+  //I want to eventually have a 3-character protocol, so I will certainly need to modify how I am parsing the data. Clearly this way of parsing is bad. 
+  //I can look online for how others have solved this problem if I don't find a good solution myself.
+//  if(bleuart.available()){
+//    mychar = bleuart.read() //this reads the ascii value, rather than a char
+//  }
 
   setState(actionChar);
     
@@ -239,6 +248,8 @@ void autoPowerOff(int minutes){
 }
 void resetOffTimer(){
   offTimerStart = millis();
+  remaining1minute=false;
+  remaining2minute=false;
 }
 
 void connect_callback(uint16_t conn_handle){ // callback invoked when central connects
