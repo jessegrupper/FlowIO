@@ -112,16 +112,22 @@ void setup() {
   cp5.addButton("Red LED17").setPosition(320,0).setSize(150,40);
   cp5.addButton("Pressure").setPosition(480,0).setSize(150,40);
   cp5.addButton("Value").setPosition(750,0).setSize(150,40);
+  cp5.addButton("Batt").setPosition(1100,0).setSize(50,40);
+
   
   //############################################################################################   
 }
 void draw() {
+  getBatteryPercentage();
   background(myColor);
   myColor = lerpColor(c1,c2,n);  
   
   textSize(20);
+  
+  text("Batt:", 1050,30); 
+  
   text("Inflate:", 50,150); //inflation label
-  text("maxP:", 1030,150); //inflation label
+  text("maxP:", 900,110); //inflation label
   text("Vacuum:", 50,300); 
   text("Release:", 50,450);
   text("Sense:", 50,600);
@@ -151,6 +157,16 @@ void stopActionAll(){
 }
 //The pressure readng happens only once per state. Each time a state character is sent a new pressure reading is made. Thus, all the control as far as delay
 //must be set in the processing code and not in the embedded code. There must be no delays inside the state machine on the SOC ever.
-void showPressure(){
-  
+void getBatteryPercentage(){
+  while(myPort.available() > 0){
+    String str = myPort.readStringUntil('\n');
+    if(str != null){
+      if(str.length() > 7){
+        if(str.substring(0,5).equals("Batt:")){ //https://processing.org/reference/String.html
+          String percentage = str.substring(5,7); //returns positions 5 and 6 (starting position is 0).
+          cp5.getController("Batt").setCaptionLabel(percentage);
+        }
+      }
+    }
+  }
 }

@@ -3,6 +3,8 @@
 
 char actionChar = '!'; //holds first character of message. Set default to 'stop'.
 char portNumberChar = '0';
+int batteryLevelReportedAt = 0; //we will set this millis() when we send the battery level.
+bool connectCallbackFinishedExecution = false; //this flag is to allow for the callback to finish execution before the void loop starts executing.
 
 BLEClientBas  clientBatteryService; 
 BLEClientDis  clientDeviceInfoService; 
@@ -55,6 +57,7 @@ void scan_callback(ble_gap_evt_adv_report_t* report){ //invoked when scanner pic
 }
 
 void connect_callback(uint16_t conn_handle){ //invoked when connection is established
+  connectCallbackFinishedExecution = false;
   Serial.print("Connected \n Dicovering Device Information ... ");
   if(clientDeviceInfoService.discover(conn_handle)){
     Serial.println("Found it");
@@ -85,6 +88,7 @@ void connect_callback(uint16_t conn_handle){ //invoked when connection is establ
   }else{
     Bluefruit.disconnect(conn_handle);    // disconnect since we couldn't find bleuart service
   }  
+  connectCallbackFinishedExecution = true;
 }
 
 void disconnect_callback(uint16_t conn_handle, uint8_t reason){ //invoked when connection is lost
@@ -102,16 +106,23 @@ void bleuart_rx_callback(BLEClientUart& uart_svc){ //invoked when uart data is r
 }
 
 void loop(){
-  if(Bluefruit.Central.connected()){    
+  if(Bluefruit.Central.connected() && connectCallbackFinishedExecution==true){    
       if(Serial.available() >= MSG_SIZE){ //I should specify the action character to be one of the known characters only using a case block.
         actionChar = Serial.read();
         portNumberChar  = Serial.read();
         transmit(actionChar, portNumberChar);
         Serial.flush(); //On the Feather, this DOES clear the input buffer! (even though on regular arduino it does not)
       }
+      
+      //Refresh and send over serial the battery level every 100ms. (Refresh rate of FlowIO is 1000ms, much slower).
+      if(millis() - batteryLevelReportedAt > 100){
+        Serial.print("Batt:");
+        Serial.println(clientBatteryService.read());
+        batteryLevelReportedAt = millis();
+      }
   }
-  Serial.println(clientBatteryService.read());
-  delay(500);  
+
+      
   waitForEvent();
 }
 
