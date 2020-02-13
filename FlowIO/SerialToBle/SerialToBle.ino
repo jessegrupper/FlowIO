@@ -4,9 +4,9 @@
 char actionChar = '!'; //holds first character of message. Set default to 'stop'.
 char portNumberChar = '0';
 
-BLEClientBas  clientBas;  // battery client
-BLEClientDis  clientDis;  // device information client
-BLEClientUart bleclientuart; // bleuart client
+BLEClientBas  clientBatteryService;  // battery client
+BLEClientDis  clientDeviceInfoService;  // device information client
+BLEClientUart clientUartService; // bleuart client
 
 void setup(){
   Serial.begin(115200);
@@ -18,12 +18,12 @@ void setup(){
   Bluefruit.begin(0, 1);
   Bluefruit.setName("Bluefruit52 Central");
 
-  clientBas.begin();  // Configure Battery client
-  clientDis.begin();  // Configure DIS client
+  clientBatteryService.begin();  // Configure Battery client
+  clientDeviceInfoService.begin();  // Configure DIS client
 
   // Init BLE Central Uart Serivce
-  bleclientuart.begin();
-  bleclientuart.setRxCallback(bleuart_rx_callback);
+  clientUartService.begin();
+  clientUartService.setRxCallback(bleuart_rx_callback);
 
   Bluefruit.setConnLedInterval(250);  // Increase Blink rate to different from PrPh advertising mode
 
@@ -45,7 +45,7 @@ void setup(){
 }
 
 void scan_callback(ble_gap_evt_adv_report_t* report){ //invoked when scanner picks up advertising data
-  if ( Bluefruit.Scanner.checkReportForService(report, bleclientuart) ){   // Check if advertising contain BleUart service
+  if ( Bluefruit.Scanner.checkReportForService(report, clientUartService) ){   // Check if advertising contain BleUart service
     Serial.print("BLE UART service detected. Connecting ... ");
     Bluefruit.Central.connect(report);    // Connect to device with bleuart service in advertising
   }else{ 
@@ -56,20 +56,20 @@ void scan_callback(ble_gap_evt_adv_report_t* report){ //invoked when scanner pic
 
 void connect_callback(uint16_t conn_handle){ //invoked when connection is established
   Serial.print("Connected \n Dicovering Device Information ... ");
-  if(clientDis.discover(conn_handle)){
+  if(clientDeviceInfoService.discover(conn_handle)){
     Serial.println("Found it");
     char buffer[32+1];
     
     // read and print out Manufacturer
     memset(buffer, 0, sizeof(buffer));
-    if(clientDis.getManufacturer(buffer, sizeof(buffer)) ){
+    if(clientDeviceInfoService.getManufacturer(buffer, sizeof(buffer)) ){
       Serial.print("Manufacturer: ");
       Serial.println(buffer);
     }
 
     // read and print out Model Number
     memset(buffer, 0, sizeof(buffer));
-    if(clientDis.getModel(buffer, sizeof(buffer)) ){
+    if(clientDeviceInfoService.getModel(buffer, sizeof(buffer)) ){
       Serial.print("Model: ");
       Serial.println(buffer);
     }
@@ -80,20 +80,20 @@ void connect_callback(uint16_t conn_handle){ //invoked when connection is establ
   }
 
   Serial.print("Dicovering Battery Information ... ");
-  if (clientBas.discover(conn_handle) ){
+  if (clientBatteryService.discover(conn_handle) ){
     Serial.println("Found it");
     Serial.print("Battery level: ");
-    Serial.print(clientBas.read());
+    Serial.print(clientBatteryService.read());
     Serial.println("%");
   }else  {
     Serial.println("Found NONE");
   }
 
   Serial.print("Discovering BLE Uart Service ... ");
-  if (bleclientuart.discover(conn_handle) ){
+  if (clientUartService.discover(conn_handle) ){
     Serial.println("Found it");
     Serial.println("Enable TXD's notify");
-    bleclientuart.enableTXD();
+    clientUartService.enableTXD();
     Serial.println("Ready to receive from peripheral");
   }else{
     Serial.println("Found NONE");
@@ -129,9 +129,9 @@ void loop(){
 
 void transmit(char actionChar, char portNumberChar){
   if(Bluefruit.Central.connected()){    
-    if(bleclientuart.discovered()){
-      bleclientuart.write(actionChar);
-      bleclientuart.write(portNumberChar);
+    if(clientUartService.discovered()){
+      clientUartService.write(actionChar);
+      clientUartService.write(portNumberChar);
     }
   }
 }
