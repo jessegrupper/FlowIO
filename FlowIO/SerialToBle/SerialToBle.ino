@@ -4,9 +4,9 @@
 char actionChar = '!'; //holds first character of message. Set default to 'stop'.
 char portNumberChar = '0';
 
-BLEClientBas  clientBatteryService;  // battery client
-BLEClientDis  clientDeviceInfoService;  // device information client
-BLEClientUart clientUartService; // bleuart client
+BLEClientBas  clientBatteryService; 
+BLEClientDis  clientDeviceInfoService; 
+BLEClientUart clientUartService;
 
 void setup(){
   Serial.begin(115200);
@@ -60,43 +60,29 @@ void connect_callback(uint16_t conn_handle){ //invoked when connection is establ
     Serial.println("Found it");
     char buffer[32+1];
     
-    // read and print out Manufacturer
     memset(buffer, 0, sizeof(buffer));
     if(clientDeviceInfoService.getManufacturer(buffer, sizeof(buffer)) ){
       Serial.print("Manufacturer: ");
       Serial.println(buffer);
     }
 
-    // read and print out Model Number
     memset(buffer, 0, sizeof(buffer));
     if(clientDeviceInfoService.getModel(buffer, sizeof(buffer)) ){
       Serial.print("Model: ");
       Serial.println(buffer);
     }
-    
-    Serial.println();
-  }else{
-    Serial.println("Found NONE");
   }
 
-  Serial.print("Dicovering Battery Information ... ");
   if (clientBatteryService.discover(conn_handle) ){
-    Serial.println("Found it");
-    Serial.print("Battery level: ");
-    Serial.print(clientBatteryService.read());
-    Serial.println("%");
-  }else  {
-    Serial.println("Found NONE");
-  }
+    Serial.print("Battery level (%): ");
+    Serial.println(clientBatteryService.read());
+  } 
 
-  Serial.print("Discovering BLE Uart Service ... ");
   if (clientUartService.discover(conn_handle) ){
-    Serial.println("Found it");
     Serial.println("Enable TXD's notify");
     clientUartService.enableTXD();
     Serial.println("Ready to receive from peripheral");
   }else{
-    Serial.println("Found NONE");
     Bluefruit.disconnect(conn_handle);    // disconnect since we couldn't find bleuart service
   }  
 }
