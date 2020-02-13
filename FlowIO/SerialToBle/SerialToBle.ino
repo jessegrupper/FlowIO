@@ -110,6 +110,8 @@ void loop(){
         Serial.flush(); //On the Feather, this DOES clear the input buffer! (even though on regular arduino it does not)
       }
   }
+    Serial.println(clientBatteryService.read());
+  delay(100);  
   waitForEvent();
 }
 

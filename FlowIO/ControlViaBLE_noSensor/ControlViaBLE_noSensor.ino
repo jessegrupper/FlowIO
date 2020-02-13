@@ -28,7 +28,9 @@
 #define VBAT_RESOLUTION   0.73242188F   //For 12bit @ 3V reference, resolution is 3000mV/4096steps = 0.732421875mV/step.
 #define VBAT_DIVIDER_COMP 1.403F        // this is 4.2/3
 #define REAL_VBAT_RESOLUTION (VBAT_RESOLUTION * VBAT_DIVIDER_COMP) //this is in units of millivolts/step.
-int batteryPercentage_prev = 0; 
+uint8_t batteryPercentage = 0;
+uint8_t batteryPercentage_prev = 0; 
+int batteryLevelReportedAt = 0; //we will set this millis() when we send the battery level.
 
 float readVBAT() {
   int raw;
@@ -105,11 +107,16 @@ void setup(){
 }
 
 void loop(){ 
-  uint8_t batteryPercentage = getBatteryPercentage();
-  if (batteryPercentage > batteryPercentage_prev+2 || batteryPercentage < batteryPercentage_prev-2) { //don't report if change is within 2%.
-      batteryService.notify(batteryPercentage);
-      batteryPercentage_prev = batteryPercentage;
+  //we want to get the battery percentage only once every 5 seconds and only if it has a change of more than 1%.
+  if(millis() - batteryLevelReportedAt >= 1000){
+    batteryPercentage = getBatteryPercentage();
+    if (batteryPercentage != batteryPercentage_prev) { //don't report if unchanged.
+        batteryService.notify(batteryPercentage);
+        batteryPercentage_prev = batteryPercentage;
+    }  
+    batteryLevelReportedAt = millis();
   }
+  
   
   // This is if we want to send commands from the chip via BLE.
   while (Serial.available()){
