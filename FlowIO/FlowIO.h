@@ -35,6 +35,7 @@ private:
 	uint8_t _releaseValvePin;
 	bool _inf; //inflation support
 	bool _vac; //vacuum support
+	bool _i2cInitialized=false; //becomes true when the activateSensor() function has been executed.
 	void _setConfigMode(configuration mode); 	
 	//void _setConfigMode(uint8_t mode);
 	uint8_t _addr = 0x18;

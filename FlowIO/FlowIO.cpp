@@ -61,6 +61,10 @@ void FlowIO::setPressureUnit(unit pUnit){ //unit is an enum defined in header fi
 bool FlowIO::activateSensor(){
   	_i2c = &Wire; //_i2c is a pointer that points to &Wire.
   	_i2c->begin();
+  	_i2cInitialized=true; //Once this is set to true, there is nothing to set it back to false.
+  		//this is the only problem with this, apparent only if someone calls the i2c .end() funtion
+  		//and then tries to call the .getPressure() function without calling activateSensor() beforehand.
+  		//In tht case, the system will hang, but a user would typically never need to ever call .end().
 	delay(10);	
   	statusByte = _getStatusByte();
   	if(statusByte == 0b01000000) return true;
@@ -115,15 +119,17 @@ uint32_t FlowIO::_getRawPressure(){
 }
 
 float FlowIO::getPressure(){
-	if(_pressureUnit==HPA) 		return _getPressureHPA();
-	else if (_pressureUnit==ATM) 	return _getPressureATM();
-	else if (_pressureUnit==PSI)	return _getPressurePSI();
+	if(_i2cInitialized==false) return 3.333f;
+	if(_pressureUnit==HPA) 	return _getPressureHPA();
+	if (_pressureUnit==ATM) return _getPressureATM();
+	if (_pressureUnit==PSI)	return _getPressurePSI();
 }
 
 float FlowIO::getPressure(unit pUnit){
-  if(pUnit==PSI)      return _getPressurePSI();
-  else if(pUnit==HPA) return _getPressureHPA();
-  else if(pUnit==ATM) return _getPressureATM();
+	if(_i2cInitialized==false) return 3.333f;
+  	if(pUnit==PSI) return _getPressurePSI();
+  	if(pUnit==HPA) return _getPressureHPA();
+  	if(pUnit==ATM) return _getPressureATM();
 }
 
 float FlowIO::_getPressureHPA(){
