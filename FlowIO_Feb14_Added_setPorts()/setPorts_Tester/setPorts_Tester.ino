@@ -8,6 +8,7 @@ void loop() {
   if(Serial.available() > 0){
     val = Serial.read();
     setPorts(val);
+    //if(val=='a') setPorts(0b00011111);
   }
 }
 
