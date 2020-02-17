@@ -1,5 +1,5 @@
 char val;
-uint8_t pins[5] = {2,3,4,5,28};
+uint8_t pins[5] = {28,29,15,7,11};
 void setup() {
   Serial.begin(115200);
 }
@@ -7,7 +7,7 @@ void setup() {
 void loop() {
   for(int i=0; i<5; i++){
     pinMode(pins[i], OUTPUT);
-    pinMode(pins[i],LOW);
+    pinMode(pins[i],HIGH);
   }
   if(Serial.available() > 0){
     val = Serial.read();
