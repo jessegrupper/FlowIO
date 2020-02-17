@@ -11,6 +11,7 @@ void loop() {
     val = Serial.read();
     //flowio.startInflation(val);
     flowio.sendCommand('+', val);
+    Serial.println(val,BIN);
     //flowio.setPorts(val);
   }
 }

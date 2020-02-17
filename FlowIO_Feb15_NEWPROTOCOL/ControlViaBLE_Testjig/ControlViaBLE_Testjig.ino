@@ -94,9 +94,9 @@ void setup(){
   uartService.begin();    // Configure and Start BLE Uart Service
   batteryService.begin(); // Start BLE Battery Service
   startAdv();   // Set up and start advertising
-  while(flowio.activateSensor()==false){
-    flowio.redLED(HIGH);  delay(100);  flowio.redLED(LOW);  delay(100);
-  }
+//  while(flowio.activateSensor()==false){
+//    flowio.redLED(HIGH);  delay(100);  flowio.redLED(LOW);  delay(100);
+//  }
 }
 
 void loop(){ 
