@@ -35,20 +35,20 @@ void setup() {
   //Once relased, the inflation should stop. If I want to inflate it more, i press it again. 
   //############################################################################################
   cp5.addButton("+1").setPosition(200,100).setSize(80,80)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write('a');}}) //If I don't send the same command twice, then the FlowIO behaves in unintended way. Maybe something is bad with the FlowIO embedded code.
-    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('a');}});
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write('p');}}) //If I don't send the same command twice, then the FlowIO behaves in unintended way. Maybe something is bad with the FlowIO embedded code.
+    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('p');}});
   cp5.addButton("+2").setPosition(300,100).setSize(80,80)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write('b');}})
-    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('b');}});
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write('h');}})
+    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('h');}});
   cp5.addButton("+3").setPosition(400,100).setSize(80,80)
     .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write('d');}})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('d');}});
   cp5.addButton("+4").setPosition(500,100).setSize(80,80)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write('h');}})
-    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('h');}});
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write('b');}})
+    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('b');}});
   cp5.addButton("+5").setPosition(600,100).setSize(80,80)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write('p');}})
-    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('p');}});
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write('a');}})
+    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('a');}});
   cp5.addSlider("PSI")  
      .setRange(15, 20)
      .setPosition(900, 120)
@@ -56,52 +56,52 @@ void setup() {
      ; 
   
   cp5.addButton("-1").setPosition(200,250).setSize(80,80)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('-'); myPort.write('a');}})
-    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('a');}});
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('-'); myPort.write('p');}})
+    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('p');}});
   cp5.addButton("-2").setPosition(300,250).setSize(80,80)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('-'); myPort.write('b');}})
-    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('b');}});
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('-'); myPort.write('h');}})
+    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('h');}});
   cp5.addButton("-3").setPosition(400,250).setSize(80,80)
     .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('-'); myPort.write('d');}})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('d');}});
   cp5.addButton("-4").setPosition(500,250).setSize(80,80)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('-'); myPort.write('h');}})
-    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('h');}});
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('-'); myPort.write('b');}})
+    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('b');}});
   cp5.addButton("-5").setPosition(600,250).setSize(80,80)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('-'); myPort.write('p');}})
-    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('p');}});
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('-'); myPort.write('a');}})
+    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('a');}});
     
   cp5.addButton("^1").setPosition(200,400).setSize(80,80)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('^'); myPort.write('a');}})
-    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('a');}});
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('^'); myPort.write('p');}})
+    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('p');}});
   cp5.addButton("^2").setPosition(300,400).setSize(80,80)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('^'); myPort.write('b');}})
-    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('b');}});
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('^'); myPort.write('h');}})
+    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('h');}});
   cp5.addButton("^3").setPosition(400,400).setSize(80,80)
     .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('^'); myPort.write('d');}})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('d');}});
   cp5.addButton("^4").setPosition(500,400).setSize(80,80)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('^'); myPort.write('h');}})
-    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('h');}});
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('^'); myPort.write('b');}})
+    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('b');}});
   cp5.addButton("^5").setPosition(600,400).setSize(80,80)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('^'); myPort.write('p');}})
-    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('p');}});
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('^'); myPort.write('a');}})
+    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('a');}});
   
   cp5.addButton("?1").setPosition(200,550).setSize(80,80)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('?'); myPort.write('a');}})
-    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('a');}});
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('?'); myPort.write('p');}})
+    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('p');}});
   cp5.addButton("?2").setPosition(300,550).setSize(80,80)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('?'); myPort.write('b');}})
-    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('b');}});
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('?'); myPort.write('h');}})
+    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('h');}});
   cp5.addButton("?3").setPosition(400,550).setSize(80,80)
     .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('?'); myPort.write('d');}})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('d');}});
   cp5.addButton("?4").setPosition(500,550).setSize(80,80)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('?'); myPort.write('h');}})
-    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('h');}});
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('?'); myPort.write('b');}})
+    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('b');}});
   cp5.addButton("?5").setPosition(600,550).setSize(80,80)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('?'); myPort.write('p');}})
-    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('p');}});
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('?'); myPort.write('a');}})
+    .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('a');}});
   
   cp5.addButton("++1").setPosition(200,800).setSize(80,80);
   cp5.addButton("++2").setPosition(300,800).setSize(80,80);
