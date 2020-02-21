@@ -13,10 +13,17 @@ Textlabel myLabel4;
 Textlabel myLabel5;
 Textlabel myLabel6;
 Textlabel mylabelAll;
+CheckBox checkbox;
 
 int myColor = color(255);
 int c1,c2;
 float n,n1;
+boolean p1 = false;
+boolean p2 = false;
+boolean p3 = false;
+boolean p4 = false;
+boolean p5 = false;
+byte ports;
 
 void setup() {
   size(1200,1200);
@@ -103,17 +110,6 @@ void setup() {
     .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('?'); myPort.write('a');}})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('a');}});
   
-  cp5.addButton("++1").setPosition(200,800).setSize(80,80);
-  cp5.addButton("++2").setPosition(300,800).setSize(80,80);
-  cp5.addButton("++3").setPosition(400,800).setSize(80,80);
-  cp5.addButton("++4").setPosition(500,800).setSize(80,80);
-  cp5.addButton("++5").setPosition(600,800).setSize(80,80);
-  
-  cp5.addButton("--1").setPosition(200,1000).setSize(80,80);
-  cp5.addButton("--2").setPosition(300,1000).setSize(80,80);  
-  cp5.addButton("--3").setPosition(400,1000).setSize(80,80);
-  cp5.addButton("--4").setPosition(500,1000).setSize(80,80);
-  cp5.addButton("--5").setPosition(600,1000).setSize(80,80);
   
   cp5.addButton("POWER OFF").setPosition(0,0).setSize(150,40)
      .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('f'); myPort.write('f');}});
@@ -127,40 +123,44 @@ void setup() {
   cp5.addButton("Value").setPosition(750,0).setSize(150,40);
   cp5.addButton("Batt").setPosition(1100,0).setSize(50,40);
 
-  
-  //############################################################################################   
+  cp5.addToggle("p1").setPosition(200,800).setSize(50,40);
+  cp5.addToggle("p2").setPosition(270,800).setSize(50,40);
+  cp5.addToggle("p3").setPosition(340,800).setSize(50,40);
+  cp5.addToggle("p4").setPosition(410,800).setSize(50,40);
+  cp5.addToggle("p5").setPosition(480,800).setSize(50,40);
+     
+  cp5.addButton("Inflate").setPosition(200,885).setSize(100,40)
+     .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write(ports);}})
+     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write(ports);}});
+  cp5.addButton("Vacuum").setPosition(320,885).setSize(100,40)
+     .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('-'); myPort.write(ports);}})
+     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write(ports);}});
+  cp5.addButton("Release").setPosition(440,885).setSize(100,40)
+     .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('^'); myPort.write(ports);}})
+     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write(ports);}});
 }
 void draw() {
+  ports=0x00;
+  if(p5) ports ^= 0x01;
+  if(p4) ports ^= 0x02;
+  if(p3) ports ^= 0x04;
+  if(p2) ports ^= 0x08;
+  if(p1) ports ^= 0x10;
+
+  
   getBatteryPercentage();
   background(myColor);
   myColor = lerpColor(c1,c2,n);  
   
   textSize(20);
-  
   text("Batt:", 1050,30); 
-  
   text("Inflate:", 50,150); //inflation label
   text("maxP:", 900,110); //inflation label
   text("Vacuum:", 50,300); 
   text("Release:", 50,450);
   text("Sense:", 50,600);
-  text("Inflate2x:", 50,850);
-  text("Vacuum2x:", 50,1050); 
-  
- 
-  
-  
-  //LEDs
-  //else if (cp5.isMouseOver(cp5.getController("Blue LED19"))){    myPort.write('b'); myPort.write('0');  }
-  //else if (cp5.isMouseOver(cp5.getController("Red LED17"))){    myPort.write('r'); myPort.write('0');  }
-  //else if (cp5.isMouseOver(cp5.getController("Pressure"))){
-  //    myPort.write('?'); myPort.write('.'); 
-  //    showPressure();
-  //}
-
-
-  //Otherwise
-  //else  stopActionAll();
+  text("setPorts: ", 50,825);
+  text("Actions: ", 50,920);
 }
 
 void stopActionAll(){
