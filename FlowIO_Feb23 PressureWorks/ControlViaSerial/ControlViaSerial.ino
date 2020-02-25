@@ -9,7 +9,7 @@ float pressure;
 char val;
 void setup() {
   Serial.begin(115200);
-  flowio = FlowIO();
+  flowio = FlowIO(VACUUM_SERIES);
   flowio.setPressureUnit(PSI);
   if (flowio.activateSensor()==false){
     while(1){

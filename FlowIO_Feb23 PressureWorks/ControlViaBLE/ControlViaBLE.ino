@@ -86,7 +86,9 @@ void setup(){
   Serial.begin(115200);
  
   while (!Serial) delay(10);   // for nrf52840 with native usb
-  flowio = FlowIO(GENERAL);
+  //flowio = FlowIO(GENERAL);
+  //flowio = FlowIO(INFLATION_SERIES);
+  flowio = FlowIO(VACUUM_SERIES);
   flowio.redLED(LOW);
 
   analogReference(AR_INTERNAL_3_0);   // Set the analog reference to 3.0V (default = 3.6V) b/c battery voltage may drop to <3.6V and then default will become inaccurate.
