@@ -75,9 +75,9 @@ void draw() {
   if(p3) ports ^= 0x04;
   if(p2) ports ^= 0x08;
   if(p1) ports ^= 0x10;
-   
-  //TODO: There is a problem that happens because we set the pressure value to 0. Thus, in the library we should use negative value for the pressure if we want to indicate an error message.
-  
+     
+  //If we are in one of the active states, the we want to continuously be monitoring the pressure as it changes.
+  //Thus we send a pressure request continuously when in an active state.
   if(vacuuming || inflating) sendPressureRequest();
   
   if(vacuuming==true && pressureValue < minP){
@@ -92,28 +92,25 @@ void draw() {
      myPort.write(0xFF);
   }
   
-  
+  //This is where we are reading the pressure information. And also the battery information.
   while(myPort.available() > 0){
-    String str = myPort.readStringUntil('\n');
-    print(str);
+    String str = myPort.readStringUntil('\n').trim(); //the trim() removes the \n
+    println(str);
     if(str != null){
       if(str.length() > 7){
         if(str.substring(0,5).equals("Batt:")){ //https://processing.org/reference/String.html
-          String batteryStr = str.substring(5,7); //returns positions 5 and 6 (starting position is 0).
+          String batteryStr = str.substring(5); //returns positions 5 and 6 (starting position is 0).
           batteryPercentageLabel.setText(batteryStr+ "%");
         }
         if(str.substring(0,5).equals("Pres:")){ 
-          String pressureStr = str.substring(5,9); //returns positions 5 and 6 (starting position is 0).
+          String pressureStr = str.substring(5); //returns positions 5 and 6 (starting position is 0).
           pressureValue = float(pressureStr);
-          pressureValLabel.setText(pressureStr+ " psi");
+          pressureValLabel.setText(pressureStr+ "psi");
         }
       }
     }
   }
   
-  //println(str);
-  //getPressure();
-  //delay(500);
 }
 
 /*###########################################################################################################################################
@@ -124,7 +121,7 @@ void sendPressureRequest(){
   myPort.write('?');
 }
 
-void sendPortPressureRequest(byte ports){
+void sendPortPressureRequest(byte ports){ //this is of type byte, which is not the same as char in processing
   myPort.write('?');
   myPort.write(ports);
 }
@@ -139,6 +136,9 @@ void setupMultiportButtons(){
   cp5.addButton("Inflate").setPosition(150,80).setSize(80,40).moveTo(multiportControlGroup)
      .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {
        sendPortPressureRequest(ports);
+       //In the interim between the line above and the line below, the draw() loop is still running, and remember than inside of the draw
+       //loop we are continously reading and parsing data that comes on the serial port. Thus, by the time we get to the line below, we
+       //will already have received a new pressure value in the variable "pressureValue".
        if(pressureValue < maxP){
            myPort.write('+'); myPort.write(ports); inflating=true;
        }
@@ -178,12 +178,9 @@ void setupInflationButtons(){
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('p'); inflating=false;}});
   cp5.addButton("+2").setPosition(200,10).setSize(80,80).moveTo(inflationGroup)
     .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {
-      byte ports = 0x02;
-      sendPortPressureRequest(ports);
-      if(pressureValue < maxP){
-        myPort.write('+'); myPort.write('h'); inflating=true;
-      }
-    }})
+      myPort.write('?'); myPort.write('h'); //this sends a request for pressure at port 2
+      if(pressureValue < maxP){myPort.write('+'); myPort.write('h'); inflating=true;}
+     }})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('h'); inflating=false;}});
   cp5.addButton("+3").setPosition(300,10).setSize(80,80).moveTo(inflationGroup)
     .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write('d'); inflating=true;}})
