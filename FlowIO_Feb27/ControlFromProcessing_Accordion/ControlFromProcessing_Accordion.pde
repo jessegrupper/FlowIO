@@ -170,11 +170,9 @@ void setupInflationButtons(){
   //############################################################################################
   cp5.addButton("+1").setPosition(100,10).setSize(80,80).moveTo(inflationGroup)
     .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {
-      sendPressureRequest();  //now I want to make the pressure request be specific to the port, by specifying the ports in the argument.
-      if(pressureValue < maxP){
-           myPort.write('+'); myPort.write('p'); inflating=true;
-       }  
-    }})
+      myPort.write('?'); myPort.write('p'); //this sends a request for pressure at port 2
+      if(pressureValue < maxP){myPort.write('+'); myPort.write('p'); inflating=true;}
+     }})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('p'); inflating=false;}});
   cp5.addButton("+2").setPosition(200,10).setSize(80,80).moveTo(inflationGroup)
     .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {
@@ -183,13 +181,22 @@ void setupInflationButtons(){
      }})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('h'); inflating=false;}});
   cp5.addButton("+3").setPosition(300,10).setSize(80,80).moveTo(inflationGroup)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write('d'); inflating=true;}})
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {
+      myPort.write('?'); myPort.write('d'); //this sends a request for pressure at port 2
+      if(pressureValue < maxP){myPort.write('+'); myPort.write('d'); inflating=true;}
+     }})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('d'); inflating=false;}});
   cp5.addButton("+4").setPosition(400,10).setSize(80,80).moveTo(inflationGroup)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write('b'); inflating=true;}})
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {
+      myPort.write('?'); myPort.write('b'); //this sends a request for pressure at port 2
+      if(pressureValue < maxP){myPort.write('+'); myPort.write('b'); inflating=true;}
+     }})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('b'); inflating=false;}});
   cp5.addButton("+5").setPosition(500,10).setSize(80,80).moveTo(inflationGroup)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('+'); myPort.write('a'); inflating=true;}})
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {
+      myPort.write('?'); myPort.write('a'); //this sends a request for pressure at port 2
+      if(pressureValue < maxP){myPort.write('+'); myPort.write('a'); inflating=true;}
+     }})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('a'); inflating=false;}});
     
     //.setColorBackground(color(0, 179, 255)) //default color
@@ -198,19 +205,34 @@ void setupInflationButtons(){
 }
 void setupVacuumButtons(){  
   cp5.addButton("-1").setPosition(100,10).setSize(80,80).moveTo(vacuumGroup)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('-'); myPort.write('p'); vacuuming=true;}})
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {
+      myPort.write('?'); myPort.write('p'); //this sends a request for pressure at port 2
+      if(pressureValue > minP){myPort.write('-'); myPort.write('p'); vacuuming=true;}
+     }})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('p'); vacuuming=false;}});
   cp5.addButton("-2").setPosition(200,10).setSize(80,80).moveTo(vacuumGroup)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('-'); myPort.write('h'); vacuuming=true;}})
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {
+      myPort.write('?'); myPort.write('h'); //this sends a request for pressure at port 2
+      if(pressureValue > minP){myPort.write('-'); myPort.write('h'); vacuuming=true;}
+     }})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('h'); vacuuming=false;}});
   cp5.addButton("-3").setPosition(300,10).setSize(80,80).moveTo(vacuumGroup)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('-'); myPort.write('d'); vacuuming=true;}})
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {
+      myPort.write('?'); myPort.write('d'); //this sends a request for pressure at port 2
+      if(pressureValue > minP){myPort.write('-'); myPort.write('d'); vacuuming=true;}
+     }})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('d'); vacuuming=false;}});
   cp5.addButton("-4").setPosition(400,10).setSize(80,80).moveTo(vacuumGroup)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('-'); myPort.write('b'); vacuuming=true;}})
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {
+      myPort.write('?'); myPort.write('b'); //this sends a request for pressure at port 2
+      if(pressureValue > minP){myPort.write('-'); myPort.write('b'); vacuuming=true;}
+     }})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('b'); vacuuming=false;}});
   cp5.addButton("-5").setPosition(500,10).setSize(80,80).moveTo(vacuumGroup)
-    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('-'); myPort.write('a'); vacuuming=true;}})
+    .onPress(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {
+      myPort.write('?'); myPort.write('a'); //this sends a request for pressure at port 2
+      if(pressureValue > minP){myPort.write('-'); myPort.write('a'); vacuuming=true;}
+     }})
     .onRelease(new CallbackListener(){public void controlEvent(CallbackEvent theEvent) {myPort.write('!'); myPort.write('a'); vacuuming=false;}});
 }
 
