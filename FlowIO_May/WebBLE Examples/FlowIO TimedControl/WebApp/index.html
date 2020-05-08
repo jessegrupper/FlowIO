@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <style>
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      //width: 100%;
+    }
+
+    td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+    }
+
+    tr:nth-child(even) {
+      background-color: #dddddd;
+    }
+    </style>
+    <title>nRF Control</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="style" href="style.css"> 
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="bluetooth.js"></script>
+    <script src="toBinaryString.js"></script>
+  </head>
+  <body>
+    <div align="center">
+      <div style="width:600px">
+        <h1>FlowIO Control</h1>
+        <hr>
+        <button id="connect" type="button" class="btn btn-primary">CONNECT</button>
+        <button id="disconnect" type="button" class="btn btn-primary">DISCONNECT</button>
+        
+        <hr>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="port1" value="1">
+            <label class="form-check-label" for="inlineCheckbox1">1</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="port2" value="2">
+            <label class="form-check-label" for="inlineCheckbox2">2</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="port3" value="3">
+            <label class="form-check-label" for="inlineCheckbox2">3</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="port4" value="4">
+            <label class="form-check-label" for="inlineCheckbox2">4</label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="port5" value="5">
+            <label class="form-check-label" for="inlineCheckbox2">5</label>
+          </div>
+        <hr> 
+        <button id="inflate" type="button" class="btn btn-primary">Inflate</button>
+        <button id="vacuum" type="button" class="btn btn-primary">Vacuum</button>
+        <button id="release" type="button" class="btn btn-primary">Release</button>
+        <hr>
+        <button id="stopAll" type="button" class="btn btn-primary">Stop All Actions</button>
+        <button id="stop" type="button" class="btn btn-primary">Stop Action</button>
+        <hr>
+
+        <form>
+        <table id="schedule">
+          <tr>
+            <th>@ t = </th>
+            <th>Action</th>
+            <th>Device</th>      
+            <th>Ports </th>
+          </tr>
+          <tr>
+            <td>
+              <input id="time_0" type="number" min="0" max="20000" value="10000" step="100"><span> ms</span>
+            </td>
+            <td>
+              <select id="action_0" disabled>
+                  <option value="+">Start Inflation</option>
+                  <option value="-">Start Vacuum</option>
+                  <option value="^">Start Release</option>
+                  <option value="!" selected>Stop Action</option>
+                </select>
+            </td>     
+            <td>
+              <select id="device_0" value="1" disabled>
+                  <option value="1">FlowIO 1</option>
+                  <option value="2">FlowIO 2</option>
+                  <option value="3">FlowIO 3</option>
+                  <option value="4">FlowIO 4</option>
+                  <option value="5">FlowIO 5</option>
+                </select>
+            </td>
+            <td>
+              <div class="form-check form-check-inline">
+                <label class="form-check-label" for="inlineCheckbox1">1</label>
+                <input class="form-check-input" type="checkbox" id="port1_0" value="1" checked disabled>
+                <label class="form-check-label" for="inlineCheckbox2">2</label>
+                <input class="form-check-input" type="checkbox" id="port2_0" value="2" checked disabled>
+                <label class="form-check-label" for="inlineCheckbox2">3</label>
+                <input class="form-check-input" type="checkbox" id="port3_0" value="3" checked disabled>
+                <label class="form-check-label" for="inlineCheckbox2">4</label>
+                <input class="form-check-input" type="checkbox" id="port4_0" value="4" checked disabled>
+                <label class="form-check-label" for="inlineCheckbox2">5</label>
+                <input class="form-check-input" type="checkbox" id="port5_0" value="5" checked disabled>
+              </div>
+            </td>
+          </tr>
+        </table> 
+        
+        <br>     
+        <input type="reset" value="Reset Form" type="button" class="btn btn-primary"/> 
+        <button id="execute" type="button" class="btn btn-primary">Execute Sequence</button>
+        <button id="addrow" type="button" class="btn btn-primary">Add Row</button>
+        <button id="deleterow" type="button" class="btn btn-primary">Delete Row</button>
+        </form>   
+
+        <hr>
+          <table class="table">
+            <thead>
+              <tr align="center">
+                <th scope="col">Pump2</th>
+                <th scope="col">Outlet</th>
+                <th scope="col">Ports</th>
+                <th scope="col">Inlet</th>
+                <th scope="col">Pump1</th>
+                <th scope="col">RED</th>
+                <th scope="col">BLUE</th>
+                <th scope="col">Sensor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr align="center" style="font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;">
+                <td id="pump2">x</td>
+                <td id="outlet">x</td>
+                <td id="ports">xxxxx</td>
+                <td id="inlet">x</td>
+                <td id="pump1">x</td>
+                <td id="ledr">x</td>
+                <td id="ledb">x</td>
+                <td id="sensor">x</td>
+              </tr>              
+            </tbody>
+          </table>               
+        <hr>
+        <button id="read" type="button" class="btn btn-primary">Read Hardware State</button>
+        <pre id="log"></pre>
+      </div>
+    </div>
+  </body>
+</html>
