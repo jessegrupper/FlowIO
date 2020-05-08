@@ -48,28 +48,35 @@ void onWrite_chrPressureRequest(uint16_t conn_hdl, BLECharacteristic* chr, uint8
     chrPressureValue.notify(&num,sizeof(num));
   }
 }
+//I need to first find out how to send a single float value TO the characteristic and store it.
 //The data array is 8-bit so I need to read 4 bytes and do some bit shifting. 
-
-//The only utility of the onWrite functions is for me to populate my minLimits and maxLimits arrays.
-
-void onWrite_chrMinPressureLimits(uint16_t conn_hdl, BLECharacteristic* chr, uint8_t* data, uint16_t len) {
-  if(len==20){
-    for(int i=0; i<5; i++){
-      uint8_t bytes[4] = {data[0+i*4],data[1+i*4],data[2+i*4],data[3+i*4]};
-      float x = *(float *)&bytes; //not clear how this works, but it does.
-      minLimits[i]=x;
-      Serial.println( minLimits[i]);
-    }
-  }
-}
 void onWrite_chrMaxPressureLimits(uint16_t conn_hdl, BLECharacteristic* chr, uint8_t* data, uint16_t len) {
   Serial.println("Max Pressure: ");
-  if(len==20){
-    for(int i=0; i<5; i++){
-      uint8_t bytes[4] = {data[0+i*4],data[1+i*4],data[2+i*4],data[3+i*4]};
-      float x = *(float *)&bytes;
-      maxLimits[i]=x;
-      Serial.println( maxLimits[i]);
-    }
+  if(len==4){
+    uint32_t rawData; //float
+    rawData = data[0];
+    rawData << 8;
+    rawData = rawData | data[1];
+    rawData << 8;
+    rawData = rawData | data[2];
+    rawData << 8;
+    rawData = rawData | data[3];
+    Serial.println(rawData);
+    Serial.println((float) rawData);
+  }
+}
+
+void onWrite_chrMinPressureLimits(uint16_t conn_hdl, BLECharacteristic* chr, uint8_t* data, uint16_t len) {
+  if(len==4){
+    uint32_t rawData;
+    rawData = data[0];
+    rawData << 8;
+    rawData = rawData | data[1];
+    rawData << 8;
+    rawData = rawData | data[2];
+    rawData << 8;
+    rawData = rawData | data[3];
+    Serial.println(rawData);
+    Serial.println((float) rawData);
   }
 }

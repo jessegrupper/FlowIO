@@ -17,13 +17,6 @@ BLECharacteristic chrMaxPressureLimits;
 BLECharacteristic chrMinPressureLimits;
 uint8_t cmd[2];
 
-//We now define the two arrays that will hold our pressure limits. The values in these will update
-//whenver the user changes the limits from the GUI interface. We will use the values of these arrays
-//to decide whether to allow a pneumatic action to take place or not.
-float minLimits[5];
-float maxLimits[5];
-
-
 void setup() {
   Serial.begin(9600);
   flowio = FlowIO(GENERAL);

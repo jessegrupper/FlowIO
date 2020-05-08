@@ -32,8 +32,8 @@ window.onload = function(){
   document.querySelector('#read').addEventListener('click', readCharacteristicValue);
   document.querySelector('#generate').addEventListener('click', requestNewNumber);
   
-  document.querySelector('#getmax').addEventListener('click', getMaxLimits);  
-  document.querySelector('#getmin').addEventListener('click', getMinLimits);
+  document.querySelector('#getmax').addEventListener('click', getMaxLimit);  
+  document.querySelector('#getmin').addEventListener('click', getMinLimit);
   document.querySelector('#setminmax').addEventListener('click', setMinMax);
 };
 
@@ -101,68 +101,28 @@ async function readCharacteristicValue(){
   //log(val.getUint8(0) + "%");
 }
 
-//##################################################################################
+
+async function getMaxLimit(){
+  let val = await chrMaxPressureLimits.readValue(); //returns a dataView
+  let floatValue = val.getFloat32(0,true); 
+  log(floatValue.toFixed(2));
+}
+
+async function getMinLimit(){
+  let val = await chrMinPressureLimits.readValue(); //returns a dataView
+  let floatValue = val.getFloat32(0,true); 
+  log(floatValue.toFixed(2));
+}
 
 async function setMinMax(){
-  let minBuffer = new ArrayBuffer(20);
-  let minArray = new Float32Array(minBuffer); //creates a view that treats the data in the buffer as float 32-bit
-  minArray[0] = $("#slider-range").slider("values",0);
-  minArray[1] = 1.11;
-  minArray[2] = 2.22;
-  minArray[3] = 3.33;
-  minArray[4] = 4.44;
-
-  let maxBuffer = new ArrayBuffer(20);
-  let maxArray = new Float32Array(maxBuffer); //creates a view that treats the data in the buffer as float 32-bit
-  maxArray[0] = $("#slider-range").slider("values",1);
-  maxArray[1] = 9.1;
-  maxArray[2] = 9.2;
-  maxArray[3] = 9.3;
-  maxArray[4] = 9.4;
-
-  await chrMinPressureLimits.writeValue(minBuffer); //This can be either minBuffer or minArray
-  await chrMaxPressureLimits.writeValue(maxBuffer);
-  for(let i=0; i<5; i++)
-    log(minArray[i].toFixed(2) + ' - ' + maxArray[i].toFixed(2));
+  let minimum = $("#slider-range").slider("values",0);
+  let maximum = $("#slider-range").slider("values",1);
+  let min = new Float32Array([minimum]);
+  let max = new Float32Array([maximum]);
+  await chrMinPressureLimits.writeValue(min);
+  await chrMaxPressureLimits.writeValue(max);
+  log(min[0].toFixed(2) + ' - ' + max[0].toFixed(2));
 }
-
-
-async function getMinLimits(){
-  let val = await chrMinPressureLimits.readValue(); //returns a dataView
-  let min5 = val.getFloat32(0,true); 
-  let min4 = val.getFloat32(4,true); 
-  let min3 = val.getFloat32(8,true); 
-  let min2 = val.getFloat32(12,true); 
-  let min1 = val.getFloat32(16,true); 
-  log(min5.toFixed(2));
-  log(min4.toFixed(2));
-  log(min3.toFixed(2));
-  log(min2.toFixed(2));
-  log(min1.toFixed(2));
-}
-
-async function getMaxLimits(){
-  let val = await chrMaxPressureLimits.readValue(); //returns a dataView
-  let max5 = val.getFloat32(0,true); 
-  let max4 = val.getFloat32(4,true); 
-  let max3 = val.getFloat32(8,true); 
-  let max2 = val.getFloat32(12,true); 
-  let max1 = val.getFloat32(16,true); 
-  log(max5.toFixed(2));
-  log(max4.toFixed(2));
-  log(max3.toFixed(2));
-  log(max2.toFixed(2));
-  log(max1.toFixed(2));
-}
-
-
-//Preset the limits in the FlowIO and see if you can just read them. You would have to 
-//parse the 'val' variable in a different way.
-//I can do this by using the offeset feature .getFloat32(4,true);
-//The mode difficult question is about writing the 20 bytes to the characteristic.
-//I shoud use an array buffer which is not limited to a specific size.
-
-//##################################################################################
 
 async function requestNewNumber(){
     let value = new Uint8Array([1]);
