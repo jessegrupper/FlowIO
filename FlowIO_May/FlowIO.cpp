@@ -235,6 +235,14 @@ float FlowIO::_getPressureATM(){
   		return _hardwareState;
   	}
 
+  	uint8_t FlowIO::readError(){
+  		return _errorCode;
+  	}
+
+  	void FlowIO::raiseError(uint8_t errorCode){
+  		_errorCode = errorCode;
+  	}
+
 //COMMUNICATION API: Two character based control. This is an implementation of our communication protocol at the library level. By invoking the "command()" 
 	//function you are able to do everything that API2 is able to do, and more, just based on what arguments you provide. The first argument 'action' is 
 	//describing what to do (+,-,!,P,N,o). The second argument is describing on which ports that action is to be performed based on the position and 

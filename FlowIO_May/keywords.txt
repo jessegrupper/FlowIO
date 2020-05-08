@@ -36,6 +36,9 @@ closePorts		KEYWORD2
 
 getHardwareState	KEYWORD2
 
+raiseError		KEYWORD2
+readError		KEYWORD2
+
 command 		KEYWORD2
 
 startInflation		KEYWORD2

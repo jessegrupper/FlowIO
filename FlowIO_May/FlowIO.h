@@ -68,6 +68,8 @@ private:
     |---|-------------|---------|
     */
 
+    uint8_t _errorCode = 0; //this will change value if an error occurs.
+
 public:	
 	//constructors
 	FlowIO();
@@ -97,6 +99,9 @@ public:
   	void closePorts(uint8_t ports); //Closes ports with 1. Leaves the ports with 0 unchanged.
   
   	uint16_t getHardwareState();
+
+  	uint8_t readError();
+  	void raiseError(uint8_t errorCode);
   	
 	//API1 Two character based control
 	//TODO: Should the command return the current hardware state instead of pressure?
