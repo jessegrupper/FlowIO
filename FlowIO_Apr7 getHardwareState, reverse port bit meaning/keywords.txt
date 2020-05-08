@@ -34,6 +34,8 @@ setPorts 		KEYWORD2
 openPorts		KEYWORD2
 closePorts		KEYWORD2
 
+getHardwareState	KEYWORD2
+
 command 		KEYWORD2
 
 startInflation		KEYWORD2
