@@ -1,12 +1,12 @@
 //TODO: In the main loop I should check if inflation==true & pressure limit exceeded, then stop Inflation.
-//And I will have similar checks for all the other actions and all ports. If the pressure is exceeded, I 
+//And I will have similar checks for all the other actions and all ports. If the pressure is exceeded, I
 //don't even want to start the action in the first place.But this requires to check the pressure at the
 //port before starting the action. It will cause a slight delay however.
 
 #include <bluefruit.h>
 #include <FlowIO.h>
 
-#define DEVICE_NAME "nrf52 Pressure"// Device Name: Maximum 30 bytes
+#define DEVICE_NAME "FlowIO_prs"// Device Name: Maximum 30 bytes
 
 FlowIO flowio;
 
@@ -15,11 +15,9 @@ BLECharacteristic chrPressureValue;
 BLECharacteristic chrPressureRequest;
 BLECharacteristic chrMaxPressureLimits;
 BLECharacteristic chrMinPressureLimits;
-uint8_t cmd[2];
 
-//We now define the two arrays that will hold our pressure limits. The values in these will update
-//whenver the user changes the limits from the GUI interface. We will use the values of these arrays
-//to decide whether to allow a pneumatic action to take place or not.
+//Define 2 arrays to hold our pressure limits, which will update whenever the limits are changed
+//from the GUI. Based on these values, we will decide whether to allow an action to take place.
 float minLimits[5];
 float maxLimits[5];
 
@@ -27,7 +25,7 @@ float maxLimits[5];
 void setup() {
   Serial.begin(9600);
   flowio = FlowIO(GENERAL);
-  if(flowio.activateSensor()==false) flowio.redLED(HIGH); 
+  if(flowio.activateSensor()==false) flowio.redLED(HIGH);
   Bluefruit.begin();
   Bluefruit.setName(DEVICE_NAME);
   Bluefruit.setTxPower(4);
@@ -35,7 +33,7 @@ void setup() {
   Bluefruit.Periph.setDisconnectCallback(disconnect_callback);
 
   createPressureService();
-  startAdvertising(); 
+  startAdvertising();
 }
 
 void startAdvertising(void) {
@@ -47,7 +45,7 @@ void startAdvertising(void) {
 
   Bluefruit.Advertising.setInterval(32, 244); // in unit of 0.625 ms
   Bluefruit.Advertising.setFastTimeout(30);   // number of seconds in fast mode
-  
+
   Bluefruit.Advertising.start(0);
 }
 

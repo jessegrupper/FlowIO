@@ -1,6 +1,8 @@
 /* This example powers off the flowio device
+TODO: Make the console print out "Disabled" if the slider moves all the way to the left.
 */
 'use strict'
+const DEVICE_NAME_PREFIX = 'FlowIO';
 
 const powerOffServiceUUIDString           = '0b0b0b0b-0b0b-0b0b-0b0b-00000000aa01';
 const chrPowerOffNowUUIDString            = '0b0b0b0b-0b0b-0b0b-0b0b-c1000000aa01';
@@ -27,10 +29,10 @@ window.onload = function(){
   inactiveValue = document.getElementById("inactiveValue");
 };
 
-async function connect() {  
+async function connect() {
   try{
     bleDevice = await navigator.bluetooth.requestDevice({
-          filters: [{namePrefix: 'nrf52'}],
+          filters: [{namePrefix: DEVICE_NAME_PREFIX}],
           optionalServices: [powerOffServiceUUIDString]
         });
     bleServer = await bleDevice.gatt.connect();
@@ -59,7 +61,7 @@ function onDisconnectButtonClick() {
   else if (bleDevice.gatt.connected) {
     log('Disconnecting');
     bleDevice.gatt.disconnect();
-  } 
+  }
   else {
     log('Device already disconnected');
   }
@@ -75,7 +77,7 @@ async function powerOff(){
 async function setPowerOffTimer(){
   if(event.target.value==0){
     inactiveValue.innerHTML = "Disabled.";
-  } 
+  }
   else{
     inactiveValue.innerHTML = event.target.value + " minutes.";
   }

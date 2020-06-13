@@ -1,12 +1,12 @@
 /*This example allows you to read and receive a notifications from a BLE device
 that reports a floating point value (4-byte).
 
-The default value reported has many digits after the decimal point, which are 
-not true, thus we are trunkating the value to just 5 digits. 
+The default value reported has many digits after the decimal point, which are
+not true, thus we are trunkating the value to just 5 digits.
 
 */
 'use strict'
-
+const DEVICE_NAME_PREFIX = 'FlowIO';
 const pressureServiceUUIDString      = '0b0b0b0b-0b0b-0b0b-0b0b-00000000aa05';
 const chrPressureValueUUID           = 0X2A6D;
 const chrPressureRequestUUIDString   = '0b0b0b0b-0b0b-0b0b-0b0b-c2000000aa05';
@@ -31,8 +31,8 @@ window.onload = function(){
   document.querySelector('#disconnect').addEventListener('click', onDisconnectButtonClick);
   document.querySelector('#read').addEventListener('click', readCharacteristicValue);
   document.querySelector('#generate').addEventListener('click', requestNewNumber);
-  
-  document.querySelector('#getmax').addEventListener('click', getMaxLimits);  
+
+  document.querySelector('#getmax').addEventListener('click', getMaxLimits);
   document.querySelector('#getmin').addEventListener('click', getMinLimits);
   document.querySelector('#setminmax').addEventListener('click', setMinMax);
 };
@@ -46,10 +46,10 @@ function getMinValue() {
   return this.value;
 }
 
-async function connect() {  
+async function connect() {
   try{
     bleDevice = await navigator.bluetooth.requestDevice({
-          filters: [{namePrefix: 'nrf52'}],
+          filters: [{namePrefix: DEVICE_NAME_PREFIX}],
           optionalServices: [pressureServiceUUIDString]
     });
     bleServer = await bleDevice.gatt.connect();
@@ -70,9 +70,9 @@ async function connect() {
 
     //This is responding to notifications sent by the peripheral of changes to the value.
     await chrPressureValue.startNotifications();
-    chrPressureValue.addEventListener('characteristicvaluechanged', event => { //an event is returned 
-      let floatValue = event.target.value.getFloat32(0,true); 
-      floatValue = floatValue.toFixed(3); //rounding to 4 decimal places. 
+    chrPressureValue.addEventListener('characteristicvaluechanged', event => { //an event is returned
+      let floatValue = event.target.value.getFloat32(0,true);
+      floatValue = floatValue.toFixed(3); //rounding to 4 decimal places.
       log("P = " + floatValue);
       console.log(event); //we can use this in the console to see all the goodies in the event object.
     })
@@ -89,7 +89,7 @@ function onDisconnectButtonClick() {
   else if (bleDevice.gatt.connected) {
     log('Disconnecting');
     bleDevice.gatt.disconnect();
-  } 
+  }
   else {
     log('Device already disconnected');
   }
@@ -129,11 +129,11 @@ async function setMinMax(){
 
 async function getMinLimits(){
   let val = await chrMinPressureLimits.readValue(); //returns a dataView
-  let min5 = val.getFloat32(0,true); 
-  let min4 = val.getFloat32(4,true); 
-  let min3 = val.getFloat32(8,true); 
-  let min2 = val.getFloat32(12,true); 
-  let min1 = val.getFloat32(16,true); 
+  let min5 = val.getFloat32(0,true);
+  let min4 = val.getFloat32(4,true);
+  let min3 = val.getFloat32(8,true);
+  let min2 = val.getFloat32(12,true);
+  let min1 = val.getFloat32(16,true);
   log(min5.toFixed(2));
   log(min4.toFixed(2));
   log(min3.toFixed(2));
@@ -143,11 +143,11 @@ async function getMinLimits(){
 
 async function getMaxLimits(){
   let val = await chrMaxPressureLimits.readValue(); //returns a dataView
-  let max5 = val.getFloat32(0,true); 
-  let max4 = val.getFloat32(4,true); 
-  let max3 = val.getFloat32(8,true); 
-  let max2 = val.getFloat32(12,true); 
-  let max1 = val.getFloat32(16,true); 
+  let max5 = val.getFloat32(0,true);
+  let max4 = val.getFloat32(4,true);
+  let max3 = val.getFloat32(8,true);
+  let max2 = val.getFloat32(12,true);
+  let max1 = val.getFloat32(16,true);
   log(max5.toFixed(2));
   log(max4.toFixed(2));
   log(max3.toFixed(2));
@@ -156,7 +156,7 @@ async function getMaxLimits(){
 }
 
 
-//Preset the limits in the FlowIO and see if you can just read them. You would have to 
+//Preset the limits in the FlowIO and see if you can just read them. You would have to
 //parse the 'val' variable in a different way.
 //I can do this by using the offeset feature .getFloat32(4,true);
 //The mode difficult question is about writing the 20 bytes to the characteristic.

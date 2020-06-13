@@ -8,7 +8,7 @@
   TODO: Create an graphical representation based on the table.
 */
 'use strict'
-
+const DEVICE_NAME_PREFIX = 'FlowIO';
 const controlServiceUUID    = '0b0b0b0b-0b0b-0b0b-0b0b-00000000aa04';
 const chrCommandUUID        = '0b0b0b0b-0b0b-0b0b-0b0b-c1000000aa04';
 const chrHardwareStatusUUID = '0b0b0b0b-0b0b-0b0b-0b0b-c2000000aa04';
@@ -31,21 +31,21 @@ window.onload = function(){
   document.querySelector('#read').addEventListener('click', getHardwareStatus);
 };
 
-async function connect() {  
+async function connect() {
   try{
     bleDevice = await navigator.bluetooth.requestDevice({
-          filters: [{namePrefix: 'nrf52'}],
+          filters: [{namePrefix: DEVICE_NAME_PREFIX}],
           optionalServices: [controlServiceUUID]
         });
     bleServer = await bleDevice.gatt.connect();
     controlService = await bleServer.getPrimaryService(controlServiceUUID);
-    chrCommand = await controlService.getCharacteristic(chrCommandUUID);  
+    chrCommand = await controlService.getCharacteristic(chrCommandUUID);
     chrHardwareStatus = await controlService.getCharacteristic(chrHardwareStatusUUID);
     log("Connected");
 
     //subscribe to receive characteristic notification events
     await chrHardwareStatus.startNotifications();
-    chrHardwareStatus.addEventListener('characteristicvaluechanged', event => { //an event is returned      
+    chrHardwareStatus.addEventListener('characteristicvaluechanged', event => { //an event is returned
       let byte0 = event.target.value.getUint8(0);
       document.querySelector('#ports').innerHTML = (byte0 & 0x1f).toBinaryString(5);
       document.querySelector('#inlet').innerHTML = (byte0>>5 & 0x01);
@@ -77,7 +77,7 @@ function onDisconnectButtonClick() {
   else if (bleDevice.gatt.connected) {
     log('Disconnecting');
     bleDevice.gatt.disconnect();
-  } 
+  }
   else {
     log('Device already disconnected');
   }

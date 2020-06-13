@@ -1,7 +1,7 @@
 #include <bluefruit.h>
 #include <FlowIO.h>
 
-#define DEVICE_NAME "nrf52 LED Control"// Device Name: Maximum 30 bytes
+#define DEVICE_NAME "FlowIO_ind"// Device Name: Maximum 30 bytes
 
 FlowIO flowio;
 

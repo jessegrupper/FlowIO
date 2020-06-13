@@ -1,11 +1,12 @@
-/* 
-  This example reports battery level changes. It uses an event listener that triggers whenver 
+/*
+  This example reports battery level changes. It uses an event listener that triggers whenver
   the BLE device sends a notification from the battery level characteristic. It also shows the
   time when the event has occurred. There are many other googies you can find in the 'event' object,
   which is returned when the event fires.
     The user also has the ability to read the current in the characteristic at any time.
 */
 'use strict'
+const DEVICE_NAME_PREFIX = 'FlowIO';
 
 let bleDevice;
 let bleServer;
@@ -18,16 +19,16 @@ window.onload = function(){
   document.querySelector('#read').addEventListener('click', readCharacteristicValue);
 };
 
-async function connect() {  
+async function connect() {
   try{
     bleDevice = await navigator.bluetooth.requestDevice({
-          filters: [{namePrefix: 'nrf52'}],
+          filters: [{namePrefix: DEVICE_NAME_PREFIX}],
           optionalServices: ['battery_service']
     });
     bleServer = await bleDevice.gatt.connect();
     batteryService = await bleServer.getPrimaryService('battery_service'); //uuid is 0x180F
     batteryLevelCharacteristic = await batteryService.getCharacteristic('battery_level'); //uuid is 0x2A19
-    
+
 
     //This is reading the value of the characteristic and displaying it
     let valueDataView = await batteryLevelCharacteristic.readValue(); //returns a DataView.
@@ -36,7 +37,7 @@ async function connect() {
 
     //Respond to notifications. Notifications will be sent when level < 10%
     await batteryLevelCharacteristic.startNotifications();
-    batteryLevelCharacteristic.addEventListener('characteristicvaluechanged', event => { //an event is returned 
+    batteryLevelCharacteristic.addEventListener('characteristicvaluechanged', event => { //an event is returned
       log(event.target.value.getUint8(0)+'%');
       console.log(event); //we can use this in the console to see all the goodies in the event object.
     })
@@ -53,7 +54,7 @@ function onDisconnectButtonClick() {
   else if (bleDevice.gatt.connected) {
     log('Disconnecting');
     bleDevice.gatt.disconnect();
-  } 
+  }
   else {
     log('Device already disconnected');
   }

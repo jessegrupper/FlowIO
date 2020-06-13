@@ -5,12 +5,12 @@
   the state of the two LEDs on the board. The characteristic has a read and write persmisions.
     In this JavaScript code, we are connecting to the device and reading the current value of
   the characteristic. Then we are toggling one of the two bytes depending on which button the
-  user presses on the screen, which in turn causes the corresponding LED to toggle as well. 
+  user presses on the screen, which in turn causes the corresponding LED to toggle as well.
 
   This example uses the Async / Await approach.
 */
 'use strict'
-
+const DEVICE_NAME_PREFIX = 'FlowIO';
 const indicatorServiceUUID = '0b0b0b0b-0b0b-0b0b-0b0b-00000000aa02';
 const chrLedStatesUUID     = '0b0b0b0b-0b0b-0b0b-0b0b-c1000000aa02';
 const chrErrorUUID         = '0b0b0b0b-0b0b-0b0b-0b0b-c2000000aa02';
@@ -34,17 +34,17 @@ window.onload = function(){
   document.querySelector('#clearError').addEventListener('click', clearError);
 };
 
-async function connect() {  
+async function connect() {
   try{
     bleDevice = await navigator.bluetooth.requestDevice({
-          filters: [{namePrefix: 'nrf52'}],
+          filters: [{namePrefix: DEVICE_NAME_PREFIX}],
           optionalServices: [indicatorServiceUUID]
         });
     bleServer = await bleDevice.gatt.connect();
     indicatorService = await bleServer.getPrimaryService(indicatorServiceUUID);
     chrLedStates = await indicatorService.getCharacteristic(chrLedStatesUUID);
     chrError = await indicatorService.getCharacteristic(chrErrorUUID);
-    
+
     log("Connected");
 
     //Subscribe to receive notifications from the error characteristic
@@ -75,7 +75,7 @@ async function connect() {
     stateBlue = valueArray[1];
     stateRed = valueArray[0];
 
-    
+
 
   }
   catch(error){
@@ -89,7 +89,7 @@ function onDisconnectButtonClick() {
   else if (bleDevice.gatt.connected) {
     log('Disconnecting');
     bleDevice.gatt.disconnect();
-  } 
+  }
   else {
     log('Device already disconnected');
   }

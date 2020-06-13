@@ -4,7 +4,7 @@
 #include <bluefruit.h>
 #include <FlowIO.h>
 
-#define DEVICE_NAME "nrf52 PWR Control"// Device Name: Maximum 30 bytes
+#define DEVICE_NAME "FlowIO_pwr"// Device Name: Maximum 30 bytes
 
 FlowIO flowio;
 
@@ -30,7 +30,7 @@ void startAdvertising(void) {
   Bluefruit.Advertising.addTxPower();
   Bluefruit.ScanResponse.addName();
   Bluefruit.Advertising.restartOnDisconnect(true);
-  Bluefruit.Advertising.addService(powerOffService); //advertise service uuic
+  Bluefruit.Advertising.addService(powerOffService); //advertise service uuid
 
   Bluefruit.Advertising.setInterval(32, 244); // in unit of 0.625 ms
   Bluefruit.Advertising.setFastTimeout(30);   // number of seconds in fast mode

@@ -20,12 +20,13 @@ void setup() {
   flowio = FlowIO(GENERAL);
   
   Bluefruit.begin();
+  Bluefruit.setTxPower(0); //Accepted values: -40, -30, -20, -16, -12, -8, -4, 0, 4  
   Bluefruit.setName(DEVICE_NAME);
   Bluefruit.Periph.setConnectCallback(connect_callback);
   Bluefruit.Periph.setDisconnectCallback(disconnect_callback);
 
-  createConfigService(); //This is defined in the file "powerService.ino"
-  startAdvertising();
+  createConfigService(); //This is defined in "configService.ino"
+  startAdvertising(); // Set up and start advertising
 }
 
 void startAdvertising(void) {
@@ -42,10 +43,10 @@ void startAdvertising(void) {
 }
 
 void loop() {
-  flowio.startInflation(0x00000001);
-  delay(1000);
-  flowio.stopAction(0x00000001);
-  delay(1000);
+  //flowio.startInflation(0x00000001);
+  //delay(1000);
+  //flowio.stopAction(0x00000001);
+  //delay(1000);
 }
 
 void connect_callback(uint16_t conn_handle){
