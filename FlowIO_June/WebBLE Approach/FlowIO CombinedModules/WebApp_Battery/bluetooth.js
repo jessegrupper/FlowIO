@@ -45,6 +45,10 @@ async function initBatteryService(){
       console.log(event); //we can use this in the console to see all the goodies in the event object.
     });
     log("Battery Service Initialized");
+
+    //To obtain the battery level, we now read the battery_level
+    //characteristic, and that triggers a notification to be sent.
+    await getBatteryLevel();
   }
   catch(error){
     log("Batt Error: " + error);
