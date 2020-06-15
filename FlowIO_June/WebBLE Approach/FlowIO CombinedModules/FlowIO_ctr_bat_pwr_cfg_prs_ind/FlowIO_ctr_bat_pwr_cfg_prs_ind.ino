@@ -74,10 +74,8 @@ void startAdvertising(void) {
 
 void loop() {
     //Serial.println(flowio.getCurrentHardwareState());
-    updateBatteryLevelEvery(5000);
-    waitForEvent();  // Request CPU to enter low-power mode until an event/interrupt occurs
-    powerOffIfInactiveTimeLimitReached();
-
+    updateBatteryLevelEvery(5000); 
+    checkIfTimeToPowerOffEvery(5000);
     //if an error has occurred, report the error by setting the characteristic value to the error code.
     //TODO: Update the library so that it itself can raise error codes. Then you would be checking if there is an
     //error with the function flowio.iferror()
@@ -86,6 +84,7 @@ void loop() {
       chrError.notify8(flowio.readError());
       flowio.raiseError(0); //clear the error. (However, this does NOT clear the error from the characteristic!)
     }
+    waitForEvent();  // Request CPU to enter low-power mode until an event/interrupt occurs
 }
 
 void connect_callback(uint16_t conn_handle){

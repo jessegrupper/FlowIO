@@ -14,18 +14,21 @@
     </div><!--End Connect / Disconnect section-->
     <div><!--Begin Configuration-->
       <h1>Pneumatic Configuration</h1>
-      <button id="read" onclick="getConfiguration()" type="button">Get Config Status</button>
-      <span id="currentConfig"></span>
-      <br>
-      <label for="select">Change to:</label>
-      <select id="select" name="select">
-        <option value=""></option>
+
+      <label for="select">Configuration:</label>
+      <select id="select" onchange="setConfiguration()" name="select">
         <option value="0">GENERAL</option>
         <option value="1">INFLATION_SERIES</option>
         <option value="2">INFLATION_PARALLEL</option>
         <option value="3">VACUUM_SERIES</option>
         <option value="4">VACUUM_PARALLEL</option>
+        <option selected disabled></option>
       </select>
+      <!--We can have a button for checking the current configuration, but it isn't
+      necessary, because the selection list should always be displaying the current
+      configuration. So we don't need this button unless something is not working.
+      <button id="read" onclick="getConfiguration()" type="button">Check Config</button>
+      -->
     </div><!--End Configuration-->
     <div><!--Begin Log-->
       <pre id="log"></pre>

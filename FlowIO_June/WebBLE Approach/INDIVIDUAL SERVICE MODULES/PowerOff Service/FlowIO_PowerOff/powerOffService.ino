@@ -2,10 +2,12 @@
 
 uint8_t inactiveTimeLimit[] = {5}; //minutes of inactivity until power off;
 int offTimerStart = millis();
-bool remaining1minute=false;
-bool remaining2minute=false;
-bool remaining3minute=false;
+bool remaining1minuteSent=false;
+bool remaining2minuteSent=false;
+bool remaining3minuteSent=false;
 uint8_t remainingTimeUint;
+float remainingTime;
+int timerLastChecked = millis();
 
 void createPowerOffService(void) {
   const uint8_t powerServiceUUID[16]              = {0x01,0xaa,0x00,0x00,0x00,0x00,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b,0x0b}; //"0b0b0b0b-0b0b-0b0b-0b0b-00000000aa01"
@@ -57,33 +59,36 @@ void onWrite_chrPowerOffWhenInactiveFor(uint16_t conn_hdl, BLECharacteristic* ch
 void resetOffTimer(){   //You must run this function in each event that you consider "active" event 
   offTimerStart = millis();
   Serial.println("RESET TIMER");
-  remaining1minute=false;
-  remaining2minute=false;
-  remaining3minute=false;
+  remaining1minuteSent=false;
+  remaining2minuteSent=false;
+  remaining3minuteSent=false;
 }
-
-void powerOffIfInactiveTimeLimitReached(){
-  if(inactiveTimeLimit[0]==0) return; //0 means that the feature is disabled.
-  
-  float remainingtime = inactiveTimeLimit[0] - (millis() - offTimerStart)/60000.0f;
-  if(remainingtime <= 0){     //IF YOU GET THIS SIGN MIXED WITH >=, YOU WILL BRICK YOUR DEVICE!!!
-    flowio.powerOFF();
-    resetOffTimer(); //This is useful in case of a hardware failure and power is not cut off properly.
-  }
-  Serial.println(remainingtime);
-  if(remainingtime<=1 && remaining1minute==false){
-    Serial.println("1 minute till off");
-    remaining1minute=true; //this is to ensure that we execute this only once.
-    chrPowerOffRemainingTime.notify8(1);
-  }
-  else if(remainingtime<=2 && remaining2minute==false){
-    Serial.println("2 minutes till off");
-    remaining2minute=true;
-    chrPowerOffRemainingTime.notify8(2);
-  }
-  else if(remainingtime<=3 && remaining3minute==false){
-    Serial.println("3 minutes till off");
-    remaining3minute=true;
-    chrPowerOffRemainingTime.notify8(3);
+void checkIfTimeToPowerOffEvery(int interval){ //the argument is in milliseconds
+  if(millis() - timerLastChecked > interval){ //this is to save resources. We want to chech only once every interval milliseconds.
+    timerLastChecked = millis();
+    if(inactiveTimeLimit[0]==0) return; //0 means that the feature is disabled.
+    
+    remainingTime = inactiveTimeLimit[0] - (millis() - offTimerStart)/60000.0f;
+    
+    if(remainingTime<=1 && remaining1minuteSent==false){
+      Serial.println("1 minute till off");
+      remaining1minuteSent=true; //this is to ensure that we execute this only once.
+      if(Bluefruit.connected()) chrPowerOffRemainingTime.notify8(1);
+    }
+    else if(remainingTime>=1 && remainingTime<=2 && remaining2minuteSent==false){
+      Serial.println("2 minutes till off");
+      remaining2minuteSent=true;
+      if(Bluefruit.connected()) chrPowerOffRemainingTime.notify8(2);
+    }
+    else if(remainingTime>=2 && remainingTime<=3 && remaining3minuteSent==false){
+      Serial.println("3 minutes till off");
+      remaining3minuteSent=true;
+      if(Bluefruit.connected()) chrPowerOffRemainingTime.notify8(3);
+    }
+    else if(remainingTime <= 0){     //IF YOU GET THIS SIGN MIXED WITH >=, YOU WILL BRICK YOUR DEVICE!!!
+      flowio.powerOFF();
+      resetOffTimer(); //This is useful in case of a hardware failure and power is not cut off properly.
+    }
+    //Serial.println(remainingtime);
   }
 }

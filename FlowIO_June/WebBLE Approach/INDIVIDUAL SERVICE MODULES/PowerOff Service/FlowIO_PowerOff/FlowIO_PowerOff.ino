@@ -39,7 +39,9 @@ void startAdvertising(void) {
 }
 
 void loop() {
-  powerOffIfInactiveTimeLimitReached();
+  //TODO: Call this function less frequently; once every 5 seconds, not continuously. 
+  //The battery module already implements that algorithm, so you should just reuse it. 
+  checkIfTimeToPowerOffEvery(5000);
 }
 
 void connect_callback(uint16_t conn_handle){ // callback invoked when central connects  

@@ -57,8 +57,8 @@ void startAdvertising(void) {
 void loop() {
     //Serial.println(flowio.getCurrentHardwareState());
     updateBatteryLevelEvery(5000);
+    checkIfTimeToPowerOffEvery(5000);
     waitForEvent();  // Request CPU to enter low-power mode until an event/interrupt occurs
-    powerOffIfInactiveTimeLimitReached();
 }
 
 void connect_callback(uint16_t conn_handle){
