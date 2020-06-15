@@ -4,29 +4,26 @@
     <title>nRF LED Control Web App</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="bluetooth.js"></script>
   </head>
   <body>
-    <div align="center">
-      <div style="width:300px; align:center">
-        <h1>Indicators</h1>
-        <hr>
-        <button id="connect" type="button" class="btn btn-default">CONNECT</button>
-        <button id="disconnect" type="button" class="btn btn-default">DISCONNECT</button>
-        <hr>
-        <button id="blue" type="button" class="btn btn-default">BLUE</button>
-        <button id="red" type="button" class="btn btn-default">RED</button>
-        <hr>
-        <button id="read" type="button" class="btn btn-default">READ LEDs</button>
-        <hr>
-        <button id="readError" type="button" class="btn btn-default">Read Error</button>
-        <button id="clearError" type="button" class="btn btn-default">Clear Error</button>        
-        <hr>
-        <pre id="log"></pre>
-      </div>
-    </div>
+    <div><!--Begin Connect / Disconnect section-->
+      <button id="connect" onclick="onConnectButtonClick()" type="button">CONNECT</button>
+      <button id="disconnect" onclick="onDisconnectButtonClick()" type="button">DISCONNECT</button>
+      <hr>
+    </div><!--End Connect / Disconnect section-->
+    <div><!--Begin Indicators section-->
+      <h1>Indicators</h1>
+      <button id="read" onclick="getLedStates()" type="button">Get LED States</button>
+      <br>
+      <button id="blue" onclick="toggleBlue()" type="button">Toggle Blue</button>
+      <button id="red" onclick="toggleRed()" type="button">Toggle Red</button>
+      <br>
+      <button id="readError" onclick="readError()" type="button">Read Error</button>
+      <button id="clearError" onclick="clearError()" type="button">Clear Error</button>
+    </div><!--End Indicators section-->
+    <div><!--Begin Log section-->
+      <pre id="log"></pre>
+    </div><!--End Log section-->
   </body>
 </html>

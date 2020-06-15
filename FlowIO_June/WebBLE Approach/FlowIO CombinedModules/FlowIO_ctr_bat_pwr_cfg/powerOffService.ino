@@ -24,7 +24,7 @@ void createPowerOffService(void) {
   chrPowerOffNow.begin();
 
   chrPowerOffWhenInactiveFor = BLECharacteristic(chrPowerOffWhenInactiveForUUID);
-  chrPowerOffWhenInactiveFor.setProperties(CHR_PROPS_WRITE | CHR_PROPS_READ);
+  chrPowerOffWhenInactiveFor.setProperties(CHR_PROPS_WRITE | CHR_PROPS_READ | CHR_PROPS_NOTIFY);
   chrPowerOffWhenInactiveFor.setWriteCallback(onWrite_chrPowerOffWhenInactiveFor);
   chrPowerOffWhenInactiveFor.setPermission(SECMODE_OPEN, SECMODE_OPEN);
   chrPowerOffWhenInactiveFor.setFixedLen(1);
@@ -39,17 +39,18 @@ void createPowerOffService(void) {
   chrPowerOffRemainingTime.write(inactiveTimeLimit,1); //this MIUST go after .begin().
 }
 
-//This is executed when a central device writes to the characteristic.
+//This is executed when a central device writes to chrPowerOffNow characteristic.
 void onWrite_chrPowerOffNow(uint16_t conn_hdl, BLECharacteristic* chr, uint8_t* data, uint16_t len) {
   if(len==1){
     if(data[0]==0x01) flowio.powerOFF();
   }
 }
-
+//This is executed when a central device writes to the chrPowerOffWhenInactiveFor characteristic
 void onWrite_chrPowerOffWhenInactiveFor(uint16_t conn_hdl, BLECharacteristic* chr, uint8_t* data, uint16_t len) {
   resetOffTimer(); //reset whenever something is written, even if invalid entry
-  if(len==1){
+  if(len==1){ //If the data is only byte, only then write to the characteristic. 
     inactiveTimeLimit[0] = data[0];
+    chrPowerOffWhenInactiveFor.notify8(data[0]); //send a notification with the data written.
   }
 }
 

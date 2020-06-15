@@ -11,13 +11,7 @@ const DEVICE_NAME_PREFIX = 'FlowIO';
 let bleDevice;
 let bleServer;
 let batteryService;
-let batteryLevelCharacteristic;
-
-window.onload = function(){
-  document.querySelector('#connect').addEventListener('click', onConnectButtonClick);
-  document.querySelector('#disconnect').addEventListener('click', onDisconnectButtonClick);
-  document.querySelector('#read').addEventListener('click', getBatteryLevel);
-};
+let chrBatteryLevel;
 
 async function onConnectButtonClick() {
   try{
@@ -38,13 +32,19 @@ async function onConnectButtonClick() {
 async function initBatteryService(){
   try{
     batteryService = await bleServer.getPrimaryService('battery_service'); //uuid is 0x180F
-    batteryLevelCharacteristic = await batteryService.getCharacteristic('battery_level'); //uuid is 0x2A19
-    await batteryLevelCharacteristic.startNotifications();
-    batteryLevelCharacteristic.addEventListener('characteristicvaluechanged', event => { //an event is returned
+    chrBatteryLevel = await batteryService.getCharacteristic('battery_level'); //uuid is 0x2A19
+    //Subscribe to receive notifications from battery characteristic
+    await chrBatteryLevel.startNotifications();
+    chrBatteryLevel.addEventListener('characteristicvaluechanged', event => { //an event is returned
       log(event.target.value.getUint8(0)+'%');
-      console.log(event); //we can use this in the console to see all the goodies in the event object.
+      document.querySelector('#batLevel').innerHTML = event.target.value.getUint8(0) + '%';
+      //console.log(event); //we can use this in the console to see all the goodies in the event object.
     });
     log("Battery Service Initialized");
+    //To print the battery level, we simply make a read request, and that triggers
+    //a notification to be sent by the device. So we don't even need to capture the
+    //returned value to display it manually; just reading it is enough.
+    getBatteryLevel();
   }
   catch(error){
     log("Batt Error: " + error);
@@ -52,9 +52,13 @@ async function initBatteryService(){
 }
 
 async function getBatteryLevel(){
-  let valDataView = await batteryLevelCharacteristic.readValue(); //this returns a DataView, and also triggers the
-  //'characteristicvaluechanged' notification. Thus it is unnecessary to log this value explicitly.
-  //log (valDataView.getUint8(0));
+  try{
+      let valDataView = await chrBatteryLevel.readValue(); //this returns a DataView, and also triggers the
+      //'characteristicvaluechanged' notification. Thus it is unnecessary to log this value explicitly.
+  }
+  catch(error){
+    log("Get Error: " + error);
+  }
 }
 
 function onDisconnectButtonClick() {

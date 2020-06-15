@@ -8,14 +8,14 @@
   </head>
   <body>
     <div><!--Begin Connect / Disconnect section-->
-      <button id="connect" type="button">CONNECT</button>
-      <button id="disconnect" type="button">DISCONNECT</button>
+      <button id="connect" onclick="onConnectButtonClick()" type="button">CONNECT</button>
+      <button id="disconnect" onclick="onDisconnectButtonClick()" type="button">DISCONNECT</button>
       <hr>
     </div><!--End Connect / Disconnect section-->
     <div><!--Begin Battery section-->
       <h2>Battery Level</h2>
-      <button id="read" type="button">Read Battery Level</button>
-      <p id="batLevel"></p>
+      <button id="read" onclick="getBatteryLevel()" type="button">Read Battery Level</button>
+      <span id="batLevel"></span>
     </div><!--End Battery section-->
     <div><!--Begin Log-->
       <pre id="log"></pre>

@@ -21,7 +21,7 @@ let chrHardwareStatus;
 let valueArray = new Uint8Array(2);
 
 window.onload = function(){
-  document.querySelector('#connect').addEventListener('click', connect);
+  document.querySelector('#connect').addEventListener('click', onConnectButtonClick);
   document.querySelector('#disconnect').addEventListener('click', onDisconnectButtonClick);
   document.querySelector('#inflate').addEventListener('click', startInflation);
   document.querySelector('#vacuum').addEventListener('click', startVacuum);
@@ -31,19 +31,27 @@ window.onload = function(){
   document.querySelector('#read').addEventListener('click', getHardwareStatus);
 };
 
-async function connect() {
+async function onConnectButtonClick() {
   try{
     bleDevice = await navigator.bluetooth.requestDevice({
           filters: [{namePrefix: DEVICE_NAME_PREFIX}],
           optionalServices: [controlServiceUUID]
         });
     bleServer = await bleDevice.gatt.connect();
+    log("Connected");
+    initControlService();
+  }
+  catch(error){
+    log("Connect Error: " + error);
+  }
+}
+
+async function initControlService(){
+  try{
     controlService = await bleServer.getPrimaryService(controlServiceUUID);
     chrCommand = await controlService.getCharacteristic(chrCommandUUID);
     chrHardwareStatus = await controlService.getCharacteristic(chrHardwareStatusUUID);
-    log("Connected");
-
-    //subscribe to receive characteristic notification events
+    //subscribe to receive characteristic notification events:
     await chrHardwareStatus.startNotifications();
     chrHardwareStatus.addEventListener('characteristicvaluechanged', event => { //an event is returned
       let byte0 = event.target.value.getUint8(0);
@@ -56,16 +64,15 @@ async function connect() {
       document.querySelector('#ledr').innerHTML = (byte1>>1 & 0x01);
       document.querySelector('#ledb').innerHTML = (byte1>>2 & 0x01);
       document.querySelector('#sensor').innerHTML = (byte1>>3 & 0x01);
+    });
+    log("Control Service Initialized");
 
-    })
-
-    //read the value of the chrHardwareStatus. This will trigger a notification to be sent.
-    //This is critical, because it initilizes the values in our html table upon connect.
-    let valueDataView = await chrHardwareStatus.readValue(); //returns a DataView.
+    //To get initial values for our table, we must read the hardware status characteristic.
+    //which will triccer a notification to be sent, and that will populate our table.
+    await getHardwareStatus();
   }
-
   catch(error){
-    log("Ouch! " + error);
+    log("Ctrl Error: " + error);
   }
 }
 

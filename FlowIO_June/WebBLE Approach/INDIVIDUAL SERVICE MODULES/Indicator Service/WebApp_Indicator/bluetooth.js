@@ -24,84 +24,69 @@ let valueArray;
 let stateRed = true;
 let stateBlue = true;
 
-window.onload = function(){
-  document.querySelector('#connect').addEventListener('click', connect);
-  document.querySelector('#disconnect').addEventListener('click', onDisconnectButtonClick);
-  document.querySelector('#red').addEventListener('click', toggleRed);
-  document.querySelector('#blue').addEventListener('click', toggleBlue);
-  document.querySelector('#read').addEventListener('click', readCharacteristicValue);
-  document.querySelector('#readError').addEventListener('click', readError);
-  document.querySelector('#clearError').addEventListener('click', clearError);
-};
-
-async function connect() {
+async function onConnectButtonClick() {
   try{
     bleDevice = await navigator.bluetooth.requestDevice({
           filters: [{namePrefix: DEVICE_NAME_PREFIX}],
           optionalServices: [indicatorServiceUUID]
         });
     bleServer = await bleDevice.gatt.connect();
+    log("Connected");
+    initIndicatorService();
+  }
+  catch(error){
+    log("Connect Error: " + error);
+  }
+}
+
+async function initIndicatorService(){
+  try{
     indicatorService = await bleServer.getPrimaryService(indicatorServiceUUID);
     chrLedStates = await indicatorService.getCharacteristic(chrLedStatesUUID);
     chrError = await indicatorService.getCharacteristic(chrErrorUUID);
-
-    log("Connected");
 
     //Subscribe to receive notifications from the error characteristic
     await chrError.startNotifications();
     chrError.addEventListener('characteristicvaluechanged', event => {
       log("Error Code: " + event.target.value.getUint8(0));
-    })
-    await chrError.readValue(); //This triggers a notification to be sent.
+    });
 
     //Subscribe to receive notifications from chrLedStates.
-    await chrLedStates.startNotifications(); //This line causes red LED to turn off for some reason!?
+    await chrLedStates.startNotifications(); //This causes red LED to turn off
+    //for unknown reasons having to do with the nrf52 bootloader or OS.
     chrLedStates.addEventListener('characteristicvaluechanged', event => {
       log("Notification: B=" + event.target.value.getUint8(1) + " R=" + event.target.value.getUint8(0));
     })
-
-    //##################
-    //Now we want to read the current value of the characteristic and set our LED state
-    //variables in JavaScript to match those from the characteristic.
-    //##################
-
-    let valueDataView = await chrLedStates.readValue(); //returns a DataView. This triggers a notification.
-    //If you didn't know that object is of type "DataView" you could just do
-    //console.log(valueDataView) and then you will see all infor about this variable in the console.
-
-    //We now convert the DataView to TypedArray so we can use array notation to access the data.
-    //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/buffer
-    valueArray = new Uint8Array(valueDataView.buffer);
-    stateBlue = valueArray[1];
-    stateRed = valueArray[0];
-
-
-
+    log("indicator Service Initialized");
+    //Make read requests to trigger our notification funcion and to get initial values.
+    getLedStates();
+    readError();
   }
   catch(error){
-    log("Ouch! " + error);
+    log("Init Error: " + error);
   }
 }
-function onDisconnectButtonClick() {
-  if (!bleDevice) {
-    log('No device found');
-  }
-  else if (bleDevice.gatt.connected) {
-    log('Disconnecting');
-    bleDevice.gatt.disconnect();
-  }
-  else {
-    log('Device already disconnected');
-  }
-}
-async function readCharacteristicValue(){
-  let val = await chrLedStates.readValue(); //this returns a DataView
-  //Whenever we request to read the value, this will trigger in JavaScript the
-  //'characteristicvaluechanged' notification. (This will NOT cause the FlowIO
-  //itself to emit a notification! Or maybe it will under the hood, but not
-  //anywhere in my code at least!) Hence, we don't need to log the value of 'val'
+
+async function getLedStates(){
+  let valueDataView = await chrLedStates.readValue(); //returns a DataView and
+  //triggers a notification. Hence, we don't need to log the value of 'val'
   //here because we will get it in the event listener function above.
-  //log("Q1=" + val.getUint8(1) + " Q0=" + val.getUint8(0));
+  //(If you didn't know that object is of type "DataView" you could just do
+  //console.log(valueDataView) and then you will see all info about it in the console.
+
+  //Set our LED state variables to match those in the characteristic:
+  //We now convert the DataView to TypedArray so we can use array notation to access the data.
+  //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/buffer
+  valueArray = new Uint8Array(valueDataView.buffer);
+  stateBlue = valueArray[1];
+  stateRed = valueArray[0];
+}
+async function readError(){
+  await chrError.readValue(); //this will trigger our notification listener.
+}
+async function clearError(){
+  let zeroArray = new Uint8Array([0]);
+  await chrError.writeValue(zeroArray);
 }
 async function toggleRed(){
     valueArray[0] = (stateRed) ? 0x00 : 0x01;
@@ -114,15 +99,18 @@ async function toggleBlue(){
     await chrLedStates.writeValue(valueArray);
 }
 
-async function readError(){
-  await chrError.readValue(); //thi will trigger our notification listener.
+function onDisconnectButtonClick() {
+  if (!bleDevice) {
+    log('No device found');
+  }
+  else if (bleDevice.gatt.connected) {
+    log('Disconnecting');
+    bleDevice.gatt.disconnect();
+  }
+  else {
+    log('Device already disconnected');
+  }
 }
-
-async function clearError(){
-  let zeroArray = new Uint8Array([0]);
-  await chrError.writeValue(zeroArray);
-}
-
 function log(text) {
     console.log(text);
     document.querySelector('#log').textContent += text + '\n';
