@@ -11,21 +11,21 @@
   </head>
   <body>
     <div><!--Begin Connect / Disconnect section-->
-      <button id="connect" type="button" class="btn btn-default">CONNECT</button>
-      <button id="disconnect" type="button" class="btn btn-default">DISCONNECT</button>
+      <button id="connect" onclick="onConnectButtonClick()" type="button">CONNECT</button>
+      <button id="disconnect" onclick="onDisconnectButtonClick()" type="button">DISCONNECT</button>
       <hr>
     </div><!--End Connect / Disconnect section-->
     <div><!--Begin Pressure-->
       <h1>Pressure</h1>
-      <button id="read" type="button">Read Value</button>
-      <button id="generate" type="button">Request New</button>
+      <button onclick="readCharacteristicValue()" id="read" type="button">Read Value</button>
+      <button onclick="requestNewNumber()" id="generate" type="button">Request New</button>
       <br>
       <input type="text" id="label" readonly>
       <div style="width:200px;" id="slider-range"></div>
       <br>
-      <button id="setminmax" type="button">setMinMax</button>
-      <button id="getmin" type="button">getMin</button>
-      <button id="getmax" type="button">getMax</button>
+      <button onclick="setMinMax()" id="setminmax" type="button">setMinMax</button>
+      <button onclick="getMinLimits()" id="getmin" type="button">getMin</button>
+      <button onclick="getMaxLimits()" id="getmax" type="button">getMax</button>
     </div><!--End Pressure-->
     <div><!--Begin Log-->
       <pre id="log"></pre>

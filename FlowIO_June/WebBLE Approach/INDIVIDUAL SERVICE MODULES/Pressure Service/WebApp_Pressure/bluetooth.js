@@ -26,17 +26,6 @@ let maxSlider;
 let minDisplay;
 let minSlider;
 
-window.onload = function(){
-  document.querySelector('#connect').addEventListener('click', connect);
-  document.querySelector('#disconnect').addEventListener('click', onDisconnectButtonClick);
-  document.querySelector('#read').addEventListener('click', readCharacteristicValue);
-  document.querySelector('#generate').addEventListener('click', requestNewNumber);
-
-  document.querySelector('#getmax').addEventListener('click', getMaxLimits);
-  document.querySelector('#getmin').addEventListener('click', getMinLimits);
-  document.querySelector('#setminmax').addEventListener('click', setMinMax);
-};
-
 function getMaxValue() {
   maxDisplay.innerHTML = this.value;
   return this.value;
@@ -46,7 +35,7 @@ function getMinValue() {
   return this.value;
 }
 
-async function connect() {
+async function onConnectButtonClick() {
   try{
     bleDevice = await navigator.bluetooth.requestDevice({
           filters: [{namePrefix: DEVICE_NAME_PREFIX}],
@@ -95,64 +84,73 @@ function onDisconnectButtonClick() {
   }
 }
 async function readCharacteristicValue(){
-  let val = await chrPressureValue.readValue(); //this returns a DataView
-  //It is unnecessary to log the value of val, because this triggers our event listener
-  //in the 'connect' function. Hence we commend out the line below.
-  //log(val.getUint8(0) + "%");
+  if (bleDevice && bleDevice.gatt.connected) {
+    let val = await chrPressureValue.readValue(); //this returns a DataView
+    //It is unnecessary to log the value of val, because this triggers our event listener
+    //in the 'connect' function. Hence we commend out the line below.
+    //log(val.getUint8(0) + "%");
+  }
+  else log("Device not connected");
 }
-
-//##################################################################################
-
 async function setMinMax(){
-  let minBuffer = new ArrayBuffer(20);
-  let minArray = new Float32Array(minBuffer); //creates a view that treats the data in the buffer as float 32-bit
-  minArray[0] = $("#slider-range").slider("values",0);
-  minArray[1] = 1.11;
-  minArray[2] = 2.22;
-  minArray[3] = 3.33;
-  minArray[4] = 4.44;
+  if (bleDevice && bleDevice.gatt.connected) {
+    let minBuffer = new ArrayBuffer(20);
+    let minArray = new Float32Array(minBuffer); //creates a view that treats the data in the buffer as float 32-bit
+    minArray[0] = $("#slider-range").slider("values",0);
+    minArray[1] = 1.11;
+    minArray[2] = 2.22;
+    minArray[3] = 3.33;
+    minArray[4] = 4.44;
 
-  let maxBuffer = new ArrayBuffer(20);
-  let maxArray = new Float32Array(maxBuffer); //creates a view that treats the data in the buffer as float 32-bit
-  maxArray[0] = $("#slider-range").slider("values",1);
-  maxArray[1] = 9.1;
-  maxArray[2] = 9.2;
-  maxArray[3] = 9.3;
-  maxArray[4] = 9.4;
+    let maxBuffer = new ArrayBuffer(20);
+    let maxArray = new Float32Array(maxBuffer); //creates a view that treats the data in the buffer as float 32-bit
+    maxArray[0] = $("#slider-range").slider("values",1);
+    maxArray[1] = 9.1;
+    maxArray[2] = 9.2;
+    maxArray[3] = 9.3;
+    maxArray[4] = 9.4;
 
-  await chrMinPressureLimits.writeValue(minBuffer); //This can be either minBuffer or minArray
-  await chrMaxPressureLimits.writeValue(maxBuffer);
-  for(let i=0; i<5; i++)
+    await chrMinPressureLimits.writeValue(minBuffer); //This can be either minBuffer or minArray
+    await chrMaxPressureLimits.writeValue(maxBuffer);
+    for(let i=0; i<5; i++)
     log(minArray[i].toFixed(2) + ' - ' + maxArray[i].toFixed(2));
+  }
+  else log("Device not connected");
 }
 
 
 async function getMinLimits(){
-  let val = await chrMinPressureLimits.readValue(); //returns a dataView
-  let min5 = val.getFloat32(0,true);
-  let min4 = val.getFloat32(4,true);
-  let min3 = val.getFloat32(8,true);
-  let min2 = val.getFloat32(12,true);
-  let min1 = val.getFloat32(16,true);
-  log(min5.toFixed(2));
-  log(min4.toFixed(2));
-  log(min3.toFixed(2));
-  log(min2.toFixed(2));
-  log(min1.toFixed(2));
+  if (bleDevice && bleDevice.gatt.connected) {
+    let val = await chrMinPressureLimits.readValue(); //returns a dataView
+    let min5 = val.getFloat32(0,true);
+    let min4 = val.getFloat32(4,true);
+    let min3 = val.getFloat32(8,true);
+    let min2 = val.getFloat32(12,true);
+    let min1 = val.getFloat32(16,true);
+    log(min5.toFixed(2));
+    log(min4.toFixed(2));
+    log(min3.toFixed(2));
+    log(min2.toFixed(2));
+    log(min1.toFixed(2));
+  }
+  else log("Device not connected");
 }
 
 async function getMaxLimits(){
-  let val = await chrMaxPressureLimits.readValue(); //returns a dataView
-  let max5 = val.getFloat32(0,true);
-  let max4 = val.getFloat32(4,true);
-  let max3 = val.getFloat32(8,true);
-  let max2 = val.getFloat32(12,true);
-  let max1 = val.getFloat32(16,true);
-  log(max5.toFixed(2));
-  log(max4.toFixed(2));
-  log(max3.toFixed(2));
-  log(max2.toFixed(2));
-  log(max1.toFixed(2));
+  if (bleDevice && bleDevice.gatt.connected) {
+    let val = await chrMaxPressureLimits.readValue(); //returns a dataView
+    let max5 = val.getFloat32(0,true);
+    let max4 = val.getFloat32(4,true);
+    let max3 = val.getFloat32(8,true);
+    let max2 = val.getFloat32(12,true);
+    let max1 = val.getFloat32(16,true);
+    log(max5.toFixed(2));
+    log(max4.toFixed(2));
+    log(max3.toFixed(2));
+    log(max2.toFixed(2));
+    log(max1.toFixed(2));
+  }
+  else log("Device not connected");
 }
 
 
@@ -165,8 +163,11 @@ async function getMaxLimits(){
 //##################################################################################
 
 async function requestNewNumber(){
+  if (bleDevice && bleDevice.gatt.connected) {
     let value = new Uint8Array([1]);
     await chrPressureRequest.writeValue(value);
+  }
+  else log("Device not connected");
 }
 
 function log(text) {
