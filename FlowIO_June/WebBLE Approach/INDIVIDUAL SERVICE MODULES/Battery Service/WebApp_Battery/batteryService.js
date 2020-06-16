@@ -6,30 +6,9 @@
     The user also has the ability to read the current in the characteristic at any time.
 */
 'use strict'
-const DEVICE_NAME_PREFIX = 'FlowIO';
 
-let bleDevice;
-let bleServer;
 let batteryService;
 let chrBatteryLevel;
-
-async function onConnectButtonClick() {
-  try{
-    bleDevice = await navigator.bluetooth.requestDevice({
-          filters: [{namePrefix: DEVICE_NAME_PREFIX}],
-          optionalServices: ['generic_access']
-          //You can find the names of services used by the API at
-          //https://googlechrome.github.io/samples/web-bluetooth/characteristic-properties-async-await.html
-          //"battery_service" and "battery_level" are names that are part of the WebBle API.
-    });
-    bleServer = await bleDevice.gatt.connect();
-    log("Connected!");
-    initBatteryService();
-  }
-  catch(error){
-    log("Connect Error: " + error);
-  }
-}
 
 async function initBatteryService(){
   try{
@@ -59,22 +38,4 @@ async function getBatteryLevel(){
     //'characteristicvaluechanged' notification. Thus it is unnecessary to log this value explicitly.
   }
   else log("Device not connected");
-}
-
-function onDisconnectButtonClick() {
-  if (!bleDevice) {
-    log('No device found');
-  }
-  else if (bleDevice.gatt.connected) {
-    log('Disconnecting');
-    bleDevice.gatt.disconnect();
-  }
-  else {
-    log('Device already disconnected');
-  }
-}
-
-function log(text) {
-    console.log(text);
-    document.querySelector('#log').textContent += text + '\n';
 }
