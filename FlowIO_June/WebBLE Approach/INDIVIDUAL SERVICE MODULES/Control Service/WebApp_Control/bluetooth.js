@@ -20,17 +20,6 @@ let chrCommand;
 let chrHardwareStatus;
 let valueArray = new Uint8Array(2);
 
-window.onload = function(){
-  document.querySelector('#connect').addEventListener('click', onConnectButtonClick);
-  document.querySelector('#disconnect').addEventListener('click', onDisconnectButtonClick);
-  document.querySelector('#inflate').addEventListener('click', startInflation);
-  document.querySelector('#vacuum').addEventListener('click', startVacuum);
-  document.querySelector('#release').addEventListener('click', startRelease);
-  document.querySelector('#stopAll').addEventListener('click', stopAllActions);
-  document.querySelector('#stop').addEventListener('click', stopAction);
-  document.querySelector('#read').addEventListener('click', getHardwareStatus);
-};
-
 async function onConnectButtonClick() {
   try{
     bleDevice = await navigator.bluetooth.requestDevice({
@@ -77,46 +66,52 @@ async function initControlService(){
 }
 
 //#############---CALLBACKS---###################
-function onDisconnectButtonClick() {
-  if (!bleDevice) {
-    log('No device found');
-  }
-  else if (bleDevice.gatt.connected) {
-    log('Disconnecting');
-    bleDevice.gatt.disconnect();
-  }
-  else {
-    log('Device already disconnected');
-  }
-}
 async function getHardwareStatus(){
-  let val = await chrHardwareStatus.readValue(); //this returns a DataView
-  log(val.getUint8(1).toBinaryString(8) + val.getUint8(0).toBinaryString(8));
+  if (bleDevice && bleDevice.gatt.connected) {
+    let val = await chrHardwareStatus.readValue(); //this returns a DataView
+    log(val.getUint8(1).toBinaryString(8) + val.getUint8(0).toBinaryString(8));
+  }
+  else log("Device not connected");
 }
 async function startInflation(){
-  valueArray[0] = 0x2b; //'+'
-  valueArray[1] = getSelectedPorts();
-  await chrCommand.writeValue(valueArray);
+  if (bleDevice && bleDevice.gatt.connected) {
+    valueArray[0] = 0x2b; //'+'
+    valueArray[1] = getSelectedPorts();
+    await chrCommand.writeValue(valueArray);
+  }
+  else log("Device not connected");
 }
 async function startVacuum(){
-  valueArray[0] = 0x2d; //'-'
-  valueArray[1] = getSelectedPorts();
-  await chrCommand.writeValue(valueArray);
+  if (bleDevice && bleDevice.gatt.connected) {
+    valueArray[0] = 0x2d; //'-'
+    valueArray[1] = getSelectedPorts();
+    await chrCommand.writeValue(valueArray);
+  }
+  else log("Device not connected");
 }
 async function startRelease(){
-  valueArray[0] = 0x5e; //'^'
-  valueArray[1] = getSelectedPorts();
-  await chrCommand.writeValue(valueArray);
+  if (bleDevice && bleDevice.gatt.connected) {
+    valueArray[0] = 0x5e; //'^'
+    valueArray[1] = getSelectedPorts();
+    await chrCommand.writeValue(valueArray);
+  }
+  else log("Device not connected");
 }
 async function stopAllActions(){
-  valueArray[0]=0x21; //'!'
-  valueArray[1]=0xff;
-  await chrCommand.writeValue(valueArray);
+  if (bleDevice && bleDevice.gatt.connected) {
+    valueArray[0]=0x21; //'!'
+    valueArray[1]=0xff;
+    await chrCommand.writeValue(valueArray);
+  }
+  else log("Device not connected");
 }
 async function stopAction(){
-  valueArray[0]=0x21; //'!'
-  valueArray[1]=getSelectedPorts();
-  await chrCommand.writeValue(valueArray);
+  if (bleDevice && bleDevice.gatt.connected) {
+    valueArray[0]=0x21; //'!'
+    valueArray[1]=getSelectedPorts();
+    await chrCommand.writeValue(valueArray);
+  }
+  else log("Device not connected");
 }
 function getSelectedPorts(){
   let portsByte = 0x00;
@@ -126,6 +121,14 @@ function getSelectedPorts(){
   if(document.querySelector('#port4').checked) portsByte ^= 0x08; //0 1000
   if(document.querySelector('#port5').checked) portsByte ^= 0x10; //1 0000
   return portsByte;
+}
+function onDisconnectButtonClick() {
+  if (!bleDevice) log('No device found');
+  else if (bleDevice.gatt.connected) {
+    log('Disconnecting');
+    bleDevice.gatt.disconnect();
+  }
+  else log('Device already disconnected');
 }
 function log(text) {
     console.log(text);

@@ -52,13 +52,11 @@ async function initBatteryService(){
 }
 
 async function getBatteryLevel(){
-  try{
-      let valDataView = await chrBatteryLevel.readValue(); //this returns a DataView, and also triggers the
-      //'characteristicvaluechanged' notification. Thus it is unnecessary to log this value explicitly.
+  if (bleDevice && bleDevice.gatt.connected){
+    let valDataView = await chrBatteryLevel.readValue(); //this returns a DataView, and also triggers the
+    //'characteristicvaluechanged' notification. Thus it is unnecessary to log this value explicitly.
   }
-  catch(error){
-    log("Get Error: " + error);
-  }
+  else log("Device not connected");
 }
 
 function onDisconnectButtonClick() {

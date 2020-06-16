@@ -1,10 +1,8 @@
 /* This example powers off the flowio device and sets the power off timer.
 
-NOTE: The flowIO does NOT provide ANY feedback about what value the timer has been
-set to. The only feedback the device gives is when the remaining time reaches 3,2,1 minutes.
-This makes the user experience very unintuitive, so probably I should redesign the
-embedded code such that feedback IS provided abuot the remaining time, or at least
-an acknoledgemet that the time has been set.
+TODO: Disable the selection box when not connected.
+TODO: Disable the controls upon disconnect.
+TODO: Implement if(bleDevice && bleDevice.gatt.connected) in all other files.
 */
 'use strict'
 const DEVICE_NAME_PREFIX = 'FlowIO';
@@ -71,7 +69,6 @@ async function getAutoOffSettingValue(){
   //Change the selector dropdown to show the current setting
   document.querySelector('#select').selectedIndex = autoOffMinutes;
 }
-//TODO: I want the value shown initially to be read from the characteristic.
 async function setAutoOffTimer(){
   let val = document.getElementById("select").value;
   let valArray = new Uint8Array([val]);
@@ -79,9 +76,19 @@ async function setAutoOffTimer(){
 }
 
 async function powerOff(){
-  log('Power off');
-  let poweroff = new Uint8Array([1]);
-  await chrPowerOffNow.writeValue(poweroff);
+  if (bleDevice && bleDevice.gatt.connected) {
+    //We need both of these ^^^ checks because bleDevice continues
+    //to exist after we disconnect. And if we check only for the
+    //second one, then we will get an error if bleDevice has
+    //not been created yet. Thus we need both.
+    log('Power off');
+    let poweroff = new Uint8Array([1]);
+    await chrPowerOffNow.writeValue(poweroff);
+  }
+  else log("Device not connected");
+}
+function disableControls(){
+  //document.querySelector('#select').
 }
 function onDisconnectButtonClick() {
   if (!bleDevice) {
@@ -90,6 +97,7 @@ function onDisconnectButtonClick() {
   else if (bleDevice.gatt.connected) {
     log('Disconnecting');
     bleDevice.gatt.disconnect();
+    disableControls();
   }
   else {
     log('Device already disconnected');

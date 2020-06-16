@@ -68,35 +68,50 @@ async function initIndicatorService(){
 }
 
 async function getLedStates(){
-  let valueDataView = await chrLedStates.readValue(); //returns a DataView and
-  //triggers a notification. Hence, we don't need to log the value of 'val'
-  //here because we will get it in the event listener function above.
-  //(If you didn't know that object is of type "DataView" you could just do
-  //console.log(valueDataView) and then you will see all info about it in the console.
+  if (bleDevice && bleDevice.gatt.connected) {
+    let valueDataView = await chrLedStates.readValue(); //returns a DataView and
+    //triggers a notification. Hence, we don't need to log the value of 'val'
+    //here because we will get it in the event listener function above.
+    //(If you didn't know that object is of type "DataView" you could just do
+    //console.log(valueDataView) and then you will see all info about it in the console.
 
-  //Set our LED state variables to match those in the characteristic:
-  //We now convert the DataView to TypedArray so we can use array notation to access the data.
-  //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/buffer
-  valueArray = new Uint8Array(valueDataView.buffer);
-  stateBlue = valueArray[1];
-  stateRed = valueArray[0];
+    //Set our LED state variables to match those in the characteristic:
+    //We now convert the DataView to TypedArray so we can use array notation to access the data.
+    //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView/buffer
+    valueArray = new Uint8Array(valueDataView.buffer);
+    stateBlue = valueArray[1];
+    stateRed = valueArray[0];
+  }
+  else log("Device not connected");
 }
 async function readError(){
-  await chrError.readValue(); //this will trigger our notification listener.
+  if (bleDevice && bleDevice.gatt.connected) {
+    await chrError.readValue(); //this will trigger our notification listener.
+  }
+  else log("Device not connected");
 }
 async function clearError(){
-  let zeroArray = new Uint8Array([0]);
-  await chrError.writeValue(zeroArray);
+  if (bleDevice && bleDevice.gatt.connected) {
+    let zeroArray = new Uint8Array([0]);
+    await chrError.writeValue(zeroArray);
+  }
+  else log("Device not connected");
 }
 async function toggleRed(){
+  if (bleDevice && bleDevice.gatt.connected) {
     valueArray[0] = (stateRed) ? 0x00 : 0x01;
     stateRed = !stateRed;
     await chrLedStates.writeValue(valueArray);
+  }
+  else log("Device not connected");
 }
 async function toggleBlue(){
+  if (bleDevice && bleDevice.gatt.connected) {
     valueArray[1] = (stateBlue) ? 0x00 : 0x01;
     stateBlue = !stateBlue;
     await chrLedStates.writeValue(valueArray);
+  }
+  else log("Device not connected");
 }
 
 function onDisconnectButtonClick() {
