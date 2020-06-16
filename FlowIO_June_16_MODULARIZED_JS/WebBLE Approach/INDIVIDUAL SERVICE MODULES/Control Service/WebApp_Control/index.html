@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Control</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="toBinaryString.js"></script>
+    <script src="controlService.js"></script>
+    <!--All service JS files must beloaded before the bleParameters.js-->
+    <script src="bleParameters.js"></script>
+    <script src="connectBle.js"></script>
+  </head>
+  <body>
+    <div><!--Begin Connect / Disconnect section-->
+      <button id="connect" onclick="onConnectButtonClick()" type="button">CONNECT</button>
+      <button id="disconnect" onclick="onDisconnectButtonClick()" type="button">DISCONNECT</button>
+      <hr>
+    </div><!--End Connect / Disconnect section-->
+    <div><!--Begin Control section-->
+      <h1>Control</h1>
+      <input type="checkbox" id="port1" value="1">
+      <label for="inlineCheckbox1">1</label>
+      <input type="checkbox" id="port2" value="2">
+      <label for="inlineCheckbox2">2</label>
+      <input type="checkbox" id="port3" value="3">
+      <label for="inlineCheckbox2">3</label>
+      <input type="checkbox" id="port4" value="4">
+      <label for="inlineCheckbox2">4</label>
+      <input type="checkbox" id="port5" value="5">
+      <label for="inlineCheckbox2">5</label>
+      <br>
+      <button id="inflate" onclick="startInflation()" type="button">Inflate</button>
+      <button id="vacuum" onclick="startVacuum()" type="button">Vacuum</button>
+      <button id="release" onclick="startRelease()" type="button">Release</button>
+      <button id="stop" onclick="stopAction()" type="button">Stop Action</button>
+      <button id="stopAll" onclick="stopAllActions()" type="button">Stop All Actions</button>
+      <table>
+        <thead>
+          <tr align="center">
+            <th scope="col">Pump2</th>
+            <th scope="col">Outlet</th>
+            <th scope="col">Ports</th>
+            <th scope="col">Inlet</th>
+            <th scope="col">Pump1</th>
+            <th scope="col">RED</th>
+            <th scope="col">BLUE</th>
+            <th scope="col">Sensor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr align="center">
+            <td id="pump2">x</td>
+            <td id="outlet">x</td>
+            <td id="ports">xxxxx</td>
+            <td id="inlet">x</td>
+            <td id="pump1">x</td>
+            <td id="ledr">x</td>
+            <td id="ledb">x</td>
+            <td id="sensor">x</td>
+          </tr>
+        </tbody>
+      </table>
+      <!--For debugging purposes, we can enable the button below that displays the status byte
+      <button id="read" onclick="getHardwareStatus()" type="button">Read Hardware State</button>
+      -->
+      <hr>
+    </div><!--End Control Section-->
+    <div><!--Begin Log-->
+      <pre id="log"></pre>
+    </div><!--End Log-->
+  </body>
+</html>
