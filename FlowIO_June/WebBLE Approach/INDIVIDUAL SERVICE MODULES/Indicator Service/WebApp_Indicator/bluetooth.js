@@ -28,7 +28,9 @@ async function onConnectButtonClick() {
   try{
     bleDevice = await navigator.bluetooth.requestDevice({
           filters: [{namePrefix: DEVICE_NAME_PREFIX}],
-          optionalServices: [indicatorServiceUUID]
+          optionalServices: ['generic_access'] //you can also write the UUID here.
+          //You can find the names of services used by the API at
+          //https://googlechrome.github.io/samples/web-bluetooth/characteristic-properties-async-await.html
         });
     bleServer = await bleDevice.gatt.connect();
     log("Connected");

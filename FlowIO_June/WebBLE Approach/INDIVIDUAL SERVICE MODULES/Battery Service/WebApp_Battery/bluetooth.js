@@ -17,7 +17,9 @@ async function onConnectButtonClick() {
   try{
     bleDevice = await navigator.bluetooth.requestDevice({
           filters: [{namePrefix: DEVICE_NAME_PREFIX}],
-          optionalServices: ['battery_service']
+          optionalServices: ['generic_access']
+          //You can find the names of services used by the API at
+          //https://googlechrome.github.io/samples/web-bluetooth/characteristic-properties-async-await.html
           //"battery_service" and "battery_level" are names that are part of the WebBle API.
     });
     bleServer = await bleDevice.gatt.connect();
