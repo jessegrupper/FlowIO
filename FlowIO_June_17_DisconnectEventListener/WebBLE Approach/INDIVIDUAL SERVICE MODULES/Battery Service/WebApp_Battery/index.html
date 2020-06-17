@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Battery</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="batteryService.js"></script>
+    <!--All service JS files must beloaded before the bleParameters.js-->
+    <script src="bleParameters.js"></script>
+    <script src="connectBle.js"></script>
+  </head>
+  <body>
+    <div><!--Begin Connect / Disconnect section-->
+      <button id="connect_btn" onclick="onConnectButtonClick()" type="button" autofocus>CONNECT</button>
+      <button id="disconnect_btn" onclick="onDisconnectButtonClick()" type="button" disabled>DISCONNECT</button>
+      <hr>
+    </div><!--End Connect / Disconnect section-->
+    <div><!--Begin Battery section-->
+      <h2>Battery Level</h2>
+      <button id="batt_refresh_btn" onclick="getBatteryLevel()" type="button" disabled>Refresh</button>
+      <span id="batLevel"></span>
+    </div><!--End Battery section-->
+    <div><!--Begin Log-->
+      <pre id="log"></pre>
+    </div><!--End Log-->
+  </body>
+</html>
