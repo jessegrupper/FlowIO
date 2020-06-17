@@ -2,11 +2,10 @@ let bleDevice;
 let bleServer;
 
 async function onConnectButtonClick() {
+  let deviceOptions = {filters: [{namePrefix: DEVICE_NAME_PREFIX}],  optionalServices: listOfServices};
+  //the 'listOfServices' is defined in the bleParameters.js file.
   try{
-    bleDevice = await navigator.bluetooth.requestDevice({
-          filters: [{namePrefix: DEVICE_NAME_PREFIX}],
-          optionalServices: listOfServices
-    });
+    bleDevice = await navigator.bluetooth.requestDevice(deviceOptions);
     bleServer = await bleDevice.gatt.connect();
     log("Connected!");
     await initializeAllServices();
