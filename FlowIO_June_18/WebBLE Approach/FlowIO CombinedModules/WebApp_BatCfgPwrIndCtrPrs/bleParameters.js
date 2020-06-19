@@ -22,7 +22,7 @@ function enableControls(){
   document.querySelector('#disconnect_btn').disabled = false;
   document.querySelector('#reconnect_btn').disabled = false;
   document.querySelector('#batt_refresh_btn').disabled = false;
-  //document.querySelector('#config_select').disabled = false;
+  document.querySelector('#config_select').disabled = false;
   document.querySelector('#autoOff_select').disabled = false;
   document.querySelector('#powrOff_btn').disabled = false;
   document.querySelector('#getLedStates_btn').disabled = false;
