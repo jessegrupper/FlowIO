@@ -4,7 +4,7 @@
 
 //#############################---INIT PARAMETERS---#################################
 const DEVICE_NAME_PREFIX = 'FlowIO';
-let listOfServices = ['generic_access','battery_service', pressureServiceUUID]
+let listOfServices = ['generic_access','battery_service', pressureServiceUUID];
 //You can find the names of service names defined in the Web Bluetooth API at
 //https://googlechrome.github.io/samples/web-bluetooth/characteristic-properties-async-await.html
 

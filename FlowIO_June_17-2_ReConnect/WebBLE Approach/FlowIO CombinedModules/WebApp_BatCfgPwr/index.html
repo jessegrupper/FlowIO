@@ -1,10 +1,12 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <title>Config</title>
+    <title>Battery</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="batteryService.js"></script>
     <script src="configService.js"></script>
+    <script src="powerOffService.js"></script>
     <!--All service JS files must beloaded before the bleParameters.js-->
     <script src="bleParameters.js"></script>
     <script src="connectBle.js"></script>
@@ -14,10 +16,16 @@
       <button id="connect_btn" onclick="onConnectButtonClick()" type="button" autofocus>CONNECT</button>
       <button id="disconnect_btn" onclick="onDisconnectButtonClick()" type="button" disabled>DISCONNECT</button>
       <button id="reconnect_btn" onclick="reconnect()" type="button" disabled>ReConnect</button>
+
       <hr>
     </div><!--End Connect / Disconnect section-->
+    <div><!--Begin Battery section-->
+      <h2>Battery Level</h2>
+      <button id="batt_refresh_btn" onclick="getBatteryLevel()" type="button" disabled>Refresh</button>
+      <span id="batLevel"></span>
+    </div><!--End Battery section-->
     <div><!--Begin Configuration-->
-      <h2>Configuration</h2>
+      <h1>Pneumatic Configuration</h1>
 
       <label for="config_select">Configuration:</label>
       <select id="config_select" onchange="setConfiguration()" disabled>
@@ -34,6 +42,28 @@
       <button id="read" onclick="getConfiguration()" type="button">Check Config</button>
       -->
     </div><!--End Configuration-->
+    <div><!--Begin Power Section-->
+      <h1>Power off</h1>
+      <label for="select">Auto OFF:</label>
+      <select id="autoOff_select" onchange="setAutoOffTimer()" disabled>
+        <option value="0">Disabled</option>
+        <option value="1">1 min</option>
+        <option value="2">2 min</option>
+        <option value="3">3 min</option>
+        <option value="4">4 min</option>
+        <option value="5">5 min</option>
+        <option value="6">6 min</option>
+        <option selected disabled></option>
+      </select>
+      <button id="powrOff_btn" onclick="powerOff()" type="button" disabled>Power Off Now</button>
+    </div><!--End Power Section-->
+
+
+
+
+
+
+
     <div><!--Begin Log-->
       <pre id="log"></pre>
     </div><!--End Log-->

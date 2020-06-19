@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Battery</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <!--JavaScript Language Extension-->
+    <script src="toBinaryString.js"></script>
+    <!--Services-->
+    <script src="batteryService.js"></script>
+    <script src="configService.js"></script>
+    <script src="powerOffService.js"></script>
+    <script src="indicatorService.js"></script>
+    <script src="controlService.js"></script>
+    <script src="pressureService.js"></script>
+    <!--All service JS files must beloaded before the bleParameters.js-->
+    <script src="bleParameters.js"></script>
+    <script src="connectBle.js"></script>
+  </head>
+  <body>
+    <div><!--Begin Connect / Disconnect section-->
+      <button id="connect_btn" onclick="onConnectButtonClick()" type="button" autofocus>CONNECT</button>
+      <button id="disconnect_btn" onclick="onDisconnectButtonClick()" type="button" disabled>DISCONNECT</button>
+      <button id="reconnect_btn" onclick="reconnect()" type="button" disabled>ReConnect</button>
+
+      <hr>
+    </div><!--End Connect / Disconnect section-->
+    <div><!--Begin Battery section-->
+      <h2>Battery Level</h2>
+      <button id="batt_refresh_btn" onclick="getBatteryLevel()" type="button" disabled>Refresh</button>
+      <span id="batLevel"></span>
+    </div><!--End Battery section-->
+    <div><!--Begin Configuration-->
+      <h2>Configuration</h2>
+
+      <label for="config_select">Configuration:</label>
+      <select id="config_select" onchange="setConfiguration()" disabled>
+        <option value="0">GENERAL</option>
+        <option value="1">INFLATION_SERIES</option>
+        <option value="2">INFLATION_PARALLEL</option>
+        <option value="3">VACUUM_SERIES</option>
+        <option value="4">VACUUM_PARALLEL</option>
+        <option selected disabled></option>
+      </select>
+      <!--We can have a button for checking the current configuration, but it isn't
+      necessary, because the selection list should always be displaying the current
+      configuration. So we don't need this button unless something is not working.
+      <button id="read" onclick="getConfiguration()" type="button">Check Config</button>
+      -->
+    </div><!--End Configuration-->
+    <div><!--Begin Power Section-->
+      <h2>Power off</h2>
+      <label for="select">Auto OFF:</label>
+      <select id="autoOff_select" onchange="setAutoOffTimer()" disabled>
+        <option value="0">Disabled</option>
+        <option value="1">1 min</option>
+        <option value="2">2 min</option>
+        <option value="3">3 min</option>
+        <option value="4">4 min</option>
+        <option value="5">5 min</option>
+        <option value="6">6 min</option>
+        <option selected disabled></option>
+      </select>
+      <button id="powrOff_btn" onclick="powerOff()" type="button" disabled>Power Off Now</button>
+    </div><!--End Power Section-->
+    <div><!--Begin Indicators section-->
+      <h2>Indicators</h2>
+      <button id="getLedStates_btn" onclick="getLedStates()" type="button" disabled>Get LED States</button>
+      <br>
+      <button id="toggleBlue_btn" onclick="toggleBlue()" type="button" disabled>Toggle Blue</button>
+      <button id="toggleRed_btn" onclick="toggleRed()" type="button" disabled>Toggle Red</button>
+      <br>
+      <button id="readError_btn" onclick="readError()" type="button" disabled>Read Error</button>
+      <button id="clearError_btn" onclick="clearError()" type="button" disabled>Clear Error</button>
+    </div><!--End Indicators section-->
+    <div><!--Begin Control section-->
+      <h2>Control</h2>
+      <input type="checkbox" id="port1_chk" value="1" disabled>
+      <label for="inlineCheckbox1">1</label>
+      <input type="checkbox" id="port2_chk" value="2" disabled>
+      <label for="inlineCheckbox2">2</label>
+      <input type="checkbox" id="port3_chk" value="3" disabled>
+      <label for="inlineCheckbox2">3</label>
+      <input type="checkbox" id="port4_chk" value="4" disabled>
+      <label for="inlineCheckbox2">4</label>
+      <input type="checkbox" id="port5_chk" value="5" disabled>
+      <label for="inlineCheckbox2">5</label>
+      <br>
+      <button id="inflate_btn" onclick="startInflation()" type="button" disabled>Inflate</button>
+      <button id="vacuum_btn" onclick="startVacuum()" type="button" disabled>Vacuum</button>
+      <button id="release_btn" onclick="startRelease()" type="button" disabled>Release</button>
+      <button id="stop_btn" onclick="stopAction()" type="button" disabled>Stop Action</button>
+      <button id="stopall_btn" onclick="stopAllActions()" type="button" disabled>Stop All Actions</button>
+      <table>
+        <thead>
+          <tr align="center">
+            <th scope="col">Pump2</th>
+            <th scope="col">Outlet</th>
+            <th scope="col">Ports</th>
+            <th scope="col">Inlet</th>
+            <th scope="col">Pump1</th>
+            <th scope="col">RED</th>
+            <th scope="col">BLUE</th>
+            <th scope="col">Sensor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr align="center">
+            <td id="pump2">x</td>
+            <td id="outlet">x</td>
+            <td id="ports">xxxxx</td>
+            <td id="inlet">x</td>
+            <td id="pump1">x</td>
+            <td id="ledr">x</td>
+            <td id="ledb">x</td>
+            <td id="sensor">x</td>
+          </tr>
+        </tbody>
+      </table>
+      <!--For debugging purposes, we can enable the button below that displays the status byte
+      <button id="read" onclick="getHardwareStatus()" type="button">Read Hardware State</button>
+      -->
+    </div><!--End Control Section-->
+    <div><!--Begin Pressure-->
+      <h2>Pressure</h2>
+      <button onclick="getPressureValue()" id="getPressure_btn" type="button" disabled>Read Value</button>
+      <button onclick="requestNewReading()" id="requestNew_btn" type="button" disabled>Request New</button>
+      <br>
+      <input type="text" id="label" readonly>
+      <div style="width:200px;" id="slider-range"></div>
+      <br>
+      <button onclick="setMinMax()" id="setminmax_btn" type="button" disabled>setMinMax</button>
+      <button onclick="getMinLimits()" id="getmin_btn" type="button" disabled>getMin</button>
+      <button onclick="getMaxLimits()" id="getmax_btn" type="button" disabled>getMax</button>
+    </div><!--End Pressure-->
+
+
+
+    <hr>
+    <div><!--Begin Log-->
+      <pre id="log"></pre>
+    </div><!--End Log-->
+  </body>
+</html>
