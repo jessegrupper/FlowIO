@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Pressure</title>
+    <meta charset="utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="pressureService.js"></script>
+    <!--All service JS files must beloaded before the bleParameters.js-->
+    <script src="bleParameters.js"></script>
+    <script src="connectBle.js"></script>
+
+  </head>
+  <body>
+    <div><!--Begin Connect / Disconnect section-->
+      <button id="connect_btn" onclick="onConnectButtonClick()" type="button" autofocus>CONNECT</button>
+      <button id="disconnect_btn" onclick="onDisconnectButtonClick()" type="button" disabled>DISCONNECT</button>
+      <button id="reconnect_btn" onclick="reconnect()" type="button" disabled>ReConnect</button>
+      <hr>
+    </div><!--End Connect / Disconnect section-->
+    <div><!--Begin Pressure-->
+      <h2>Pressure</h2>
+      <button onclick="getPressureValue()" id="getPressure_btn" type="button" disabled>Read Value</button>
+      <button onclick="requestNewReading()" id="requestNew_btn" type="button" disabled>Request New</button>
+      <br>
+      <input type="text" id="label" readonly>
+      <div style="width:200px;" id="slider-range"></div>
+      <br>
+      <button onclick="setMinMax()" id="setminmax_btn" type="button" disabled>setMinMax</button>
+      <button onclick="getMinLimits()" id="getmin_btn" type="button" disabled>getMin</button>
+      <button onclick="getMaxLimits()" id="getmax_btn" type="button" disabled>getMax</button>
+    </div><!--End Pressure-->
+    <div><!--Begin Log-->
+      <br>
+      <button id="clearLog_btn" onclick="clearLog()" type="button">Clear Log</button>
+      <pre id="log"></pre>
+    </div><!--End Log-->
+  </body>
+</html>
