@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Control</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <script src="toBinaryString.js"></script>
+    <script src="controlService.js"></script>
+    <script src="scheduler.js"></script>
+    <!--All service JS files must beloaded before the bleParameters.js-->
+    <script src="bleParameters.js"></script>
+    <script src="connectBle.js"></script>
+  </head>
+  <body>
+    <div><!--Begin Connect / Disconnect section-->
+      <button id="connect_btn" onclick="onConnectButtonClick()" type="button" autofocus>CONNECT</button>
+      <button id="disconnect_btn" onclick="onDisconnectButtonClick()" type="button" disabled>DISCONNECT</button>
+      <button id="reconnect_btn" onclick="reconnect()" type="button" disabled>ReConnect</button>
+      <hr>
+    </div><!--End Connect / Disconnect section-->
+    <div><!--Begin Control section-->
+      <h2>Control</h2>
+      <input type="checkbox" id="port1_chk" value="1" disabled>
+      <label for="port1_chk">1</label>
+      <input type="checkbox" id="port2_chk" value="2" disabled>
+      <label for="port2_chk">2</label>
+      <input type="checkbox" id="port3_chk" value="3" disabled>
+      <label for="port3_chk">3</label>
+      <input type="checkbox" id="port4_chk" value="4" disabled>
+      <label for="port4_chk">4</label>
+      <input type="checkbox" id="port5_chk" value="5" disabled>
+      <label for="port5_chk">5</label>
+      <br>
+      <button id="inflate_btn" onclick="startInflation()" type="button" disabled>Inflate</button>
+      <button id="vacuum_btn" onclick="startVacuum()" type="button" disabled>Vacuum</button>
+      <button id="release_btn" onclick="startRelease()" type="button" disabled>Release</button>
+      <button id="stop_btn" onclick="stopAction()" type="button" disabled>Stop Action</button>
+      <button id="stopall_btn" onclick="stopAllActions()" type="button" disabled>Stop All Actions</button>
+    </div><!--End Control section-->
+    <hr>
+    <div><!--Begin Hardware State section-->
+      <h2>Hardware Status</h2>
+      <table>
+        <thead>
+          <tr align="center">
+            <th scope="col">Pump2</th>
+            <th scope="col">Outlet</th>
+            <th scope="col">Ports</th>
+            <th scope="col">Inlet</th>
+            <th scope="col">Pump1</th>
+            <th scope="col">RED</th>
+            <th scope="col">BLUE</th>
+            <th scope="col">Sensor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr align="center">
+            <td id="pump2">x</td>
+            <td id="outlet">x</td>
+            <td id="ports">xxxxx</td>
+            <td id="inlet">x</td>
+            <td id="pump1">x</td>
+            <td id="ledr">x</td>
+            <td id="ledb">x</td>
+            <td id="sensor">x</td>
+          </tr>
+        </tbody>
+      </table>
+      <!--For debugging purposes, we can enable the button below that displays the status byte
+      <button id="read" onclick="getHardwareStatus()" type="button">Read Hardware State</button>
+      -->
+      <hr>
+    </div><!--End Hardware State Section-->
+
+
+    <div><!--Begin Scheduler-->
+      <form>
+      <table id="schedule">
+        <tr>
+          <th>@ t = </th>
+          <th>Action</th>
+          <th>Device</th>
+          <th>Ports </th>
+        </tr>
+        <tr>
+          <td>
+            <input class="starttime" id="time_0" type="number" min="0" max="20000" value="10000" step="100"><span> ms</span>
+          </td>
+          <td>
+            <select id="action_0" disabled>
+                <option value="+">Start Inflation</option>
+                <option value="-">Start Vacuum</option>
+                <option value="^">Start Release</option>
+                <option value="!" selected>Stop Action</option>
+              </select>
+          </td>
+          <td>
+            <select id="device_0" value="1" disabled>
+                <option value="1">FlowIO 1</option>
+                <option value="2">FlowIO 2</option>
+                <option value="3">FlowIO 3</option>
+                <option value="4">FlowIO 4</option>
+                <option value="5">FlowIO 5</option>
+              </select>
+          </td>
+          <td>
+            <div>
+              <label for="port1_0">1</label>
+              <input type="checkbox" id="port1_0" value="1" checked disabled>
+              <label for="port2_0">2</label>
+              <input type="checkbox" id="port2_0" value="2" checked disabled>
+              <label for="port3_0">3</label>
+              <input type="checkbox" id="port3_0" value="3" checked disabled>
+              <label for="port4_0">4</label>
+              <input type="checkbox" id="port4_0" value="4" checked disabled>
+              <label for="port5_0">5</label>
+              <input type="checkbox" id="port5_0" value="5" checked disabled>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <br>
+      <input type="reset" value="Reset Form" type="button"/>
+      <button id="execute" onclick="executeSequence()" type="button">Execute Sequence</button>
+      <button id="addrow" onclick="addRow()" type="button">Add Row</button>
+      <button id="deleterow" onclick="deleteRow()" type="button">Delete Row</button>
+      </form>
+    </div><!--End Scheduler-->
+
+    <div><!--Begin Log-->
+      <pre id="log"></pre>
+    </div><!--End Log-->
+  </body>
+</html>

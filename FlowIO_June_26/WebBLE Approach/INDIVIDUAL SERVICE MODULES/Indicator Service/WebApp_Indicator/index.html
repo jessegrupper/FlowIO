@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Indicators</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="indicatorService.js"></script>
+    <!--All service JS files must beloaded before the bleParameters.js-->
+    <script src="bleParameters.js"></script>
+    <script src="connectBle.js"></script>
+  </head>
+  <body>
+    <div><!--Begin Connect / Disconnect section-->
+      <button id="connect_btn" onclick="onConnectButtonClick()" type="button" autofocus>CONNECT</button>
+      <button id="disconnect_btn" onclick="onDisconnectButtonClick()" type="button" disabled>DISCONNECT</button>
+      <button id="reconnect_btn" onclick="reconnect()" type="button" disabled>ReConnect</button>
+      <hr>
+    </div><!--End Connect / Disconnect section-->
+    <div><!--Begin Indicators section-->
+      <h2>Indicators</h2>
+      <button id="getLedStates_btn" onclick="getLedStates()" type="button" disabled>Get LED States</button>
+      <br>
+      <button id="toggleBlue_btn" onclick="toggleBlue()" type="button" disabled>Toggle Blue</button>
+      <button id="toggleRed_btn" onclick="toggleRed()" type="button" disabled>Toggle Red</button>
+      <br>
+      <button id="readError_btn" onclick="readError()" type="button" disabled>Read Error</button>
+      <button id="clearError_btn" onclick="clearError()" type="button" disabled>Clear Error</button>
+    </div><!--End Indicators section-->
+    <div><!--Begin Log section-->
+      <pre id="log"></pre>
+    </div><!--End Log section-->
+  </body>
+</html>

@@ -1,0 +1,8 @@
+Find out why are some modules causing an error on Windows OS.They work fine on Mac and Android.
+
+You can start the investigation by testing the Web BLE examples provided by google.
+
+Have a version that is with Serial debug messages and a version without.
+
+Implement the GPIO service
+
