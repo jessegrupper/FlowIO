@@ -10,8 +10,14 @@ let listOfServices = ['generic_access','battery_service', pressureServiceUUID];
 
 //This function must contain all of the services that you wish to access:
 async function initializeAllServices(){
-  await initPressureService(); //defined in "controlService.js"
+  try{
+    await initPressureService(); //defined in "controlService.js"
+  }catch(error){
+    console.log("Init Error: " + error);
+    throw "ERROR: initializeAllServices() failed."
+  }
 }
+
 function enableControls(){
   document.querySelector('#disconnect_btn').disabled = false;
   document.querySelector('#getPressure_btn').disabled = false;

@@ -32,6 +32,7 @@ async function initBatteryService(){
     //Thus, to make the caller aware that initBatteryService() gave an arror, we must
     ///raise owr own error here.
     throw "ERROR: initBatteryService() failed.";
+    //Anything we put here after "throw" line will not get executed.
   }
 }
 

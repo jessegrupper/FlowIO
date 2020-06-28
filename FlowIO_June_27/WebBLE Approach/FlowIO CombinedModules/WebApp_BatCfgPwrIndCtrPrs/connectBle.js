@@ -43,7 +43,7 @@ async function reconnect(){
         enableControls();
         reconnectAttempts = 0;
       }catch(error){
-        log(error);
+        log("Reconnect failed. " + error);
         reconnectAttempts++;
         if(reconnectAttempts<3){
           log("Trying again " + reconnectAttempts)

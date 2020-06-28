@@ -10,7 +10,12 @@ let listOfServices = ['generic_access','battery_service'];
 
 //This function must contain all of the services that you wish to access:
 async function initializeAllServices(){
-  await initBatteryService(); //defined in "batteryService.js"
+  try{
+    await initBatteryService(); //defined in "batteryService.js"
+  }catch(error){
+    console.log("Init Error: " + error);
+    throw "ERROR: initializeAllServices() failed."
+  }
 }
 function enableControls(){
   document.querySelector('#disconnect_btn').disabled = false;

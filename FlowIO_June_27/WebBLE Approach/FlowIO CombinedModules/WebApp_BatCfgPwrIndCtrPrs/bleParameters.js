@@ -12,12 +12,17 @@ controlServiceUUID, indicatorServiceUUID, pressureServiceUUID, powerOffServiceUU
 
 //This function must contain all of the services that you wish to access:
 async function initializeAllServices(){
-  await initBatteryService(); //defined in "batteryService.js"
-  await initConfigService(); //defined in "configService.js"
-  await initPowerOffService(); //defined in "controlService.js"
-  await initIndicatorService(); //defined in "controlService.js"
-  await initControlService(); //defined in "controlService.js"
-  await initPressureService(); //defined in "controlService.js"
+  try{
+    await initBatteryService(); //defined in "batteryService.js"
+    await initConfigService(); //defined in "configService.js"
+    await initPowerOffService(); //defined in "controlService.js"
+    await initIndicatorService(); //defined in "controlService.js"
+    await initControlService(); //defined in "controlService.js"
+    await initPressureService(); //defined in "controlService.js"
+  }catch(error){
+    console.log("Init Error: " + error);
+    throw "ERROR: initializeAllServices() failed."
+  }
 }
 function enableControls(){
   document.querySelector('#disconnect_btn').disabled = false;
