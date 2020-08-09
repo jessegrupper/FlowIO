@@ -7,7 +7,12 @@ let recvId = document.getElementById("receiver-id");
 let messageLog = document.getElementById("messageLog");
 
 function initialize() {   // Create own peer object with connection to shared PeerJS server, and set up event callbalks.
-    peer = new Peer(null, {debug: 2});
+    //Default Server:
+    //peer = new Peer(null, {debug: 2});
+
+    //Custom Server:
+    peer = new Peer({host:'peerjs-server.herokuapp.com', secure:true, port:443})
+
     peer.on('open', id => {
         console.log('ID: ' + id);
         recvId.innerHTML = "ID: " + id;

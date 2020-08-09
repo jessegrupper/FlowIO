@@ -7,7 +7,12 @@ let msgLog = document.getElementById("msgLog");
 
 function initialize() { //creates a peer object for our end, and sets up callbacks.
     // Create own peer object with connection to shared PeerJS server
-    peer = new Peer(null, {debug: 2});
+
+    //Default Server:
+    //peer = new Peer(null, {debug: 2});
+
+    //Custom Server:
+    peer = new Peer({host:'peerjs-server.herokuapp.com', secure:true, port:443})
 
     peer.on('disconnected', function () {
         constatus.innerHTML = "Connection lost. Please reconnect";
