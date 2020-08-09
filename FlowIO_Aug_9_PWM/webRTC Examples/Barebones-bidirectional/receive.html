@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width">
+        <title>Reciever</title>
+    </head>
+    <body>
+        <h1>Receiver</h1>
+        <div id="receiver-id">ID:</div>
+        <input type="text" id="sendMessageBox" placeholder="Enter a message..." autofocus="true" />
+        <button type="button" onclick="sendMessage()" id="sendButton">Send</button>
+        <button type="button" onclick="clearMessageLog()">Clear Msgs (Local)</button>
+        <div id="message"></div>
+        <script src="peerjs.min.js"></script>
+        <script src="receive.js"></script>
+    </body>
+</html>
