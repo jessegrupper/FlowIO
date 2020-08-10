@@ -87,7 +87,8 @@ function disableReconnectBtn(){
 
 function log(text) {
     console.log(text);
-    document.querySelector('#log').textContent += text + '\n';
+    //This is how to make the new line appear at the top of the log!
+    document.querySelector('#log').textContent = text + '\n' + document.querySelector('#log').textContent;
 }
 
 function clearLog() {
