@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Config</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="configService.js"></script>
+    <!--All service JS files must beloaded before the conditions.js-->
+    <script src="conditions.js"></script>
+    <script src="connectBle.js"></script>
+  </head>
+  <body>
+    <div><!--Begin Connect / Disconnect section-->
+      <button id="connect_btn" onclick="onConnectButtonClick()" type="button" autofocus>CONNECT</button>
+      <button id="disconnect_btn" onclick="onDisconnectButtonClick()" type="button" disabled>DISCONNECT</button>
+      <button id="reconnect_btn" onclick="reconnect()" type="button" disabled>ReConnect</button>
+      <hr>
+    </div><!--End Connect / Disconnect section-->
+    <div><!--Begin Configuration-->
+      <h2>Configuration</h2>
+
+      <label for="config_select">Configuration:</label>
+      <select id="config_select" onchange="setConfiguration()" disabled>
+        <option value="0">GENERAL</option>
+        <option value="1">INFLATION_SERIES</option>
+        <option value="2">INFLATION_PARALLEL</option>
+        <option value="3">VACUUM_SERIES</option>
+        <option value="4">VACUUM_PARALLEL</option>
+        <option selected disabled></option>
+      </select>
+      <!--We can have a button for checking the current configuration, but it isn't
+      necessary, because the selection list should always be displaying the current
+      configuration. So we don't need this button unless something is not working.
+      <button id="read" onclick="getConfiguration()" type="button">Check Config</button>
+      -->
+    </div><!--End Configuration-->
+    <div><!--Begin Log-->
+      <br>
+      <button id="clearLog_btn" onclick="clearLog()" type="button">Clear Log</button>
+      <pre id="log"></pre>
+    </div><!--End Log-->
+  </body>
+</html>
