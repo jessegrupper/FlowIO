@@ -118,13 +118,19 @@ In the API functions, we can only use InletValve and OutletValve terms, only in 
 		return rawData;
 	}
 	float FlowIO::getPressure(){
-		if(_i2cInitialized==false) return 8888.0f;
+		if(_i2cInitialized==false){
+			_errorCode = 223;
+			return 888.8f;
+		} 
 		if(_pressureUnit==HPA) 		return _getPressureHPA();
 		if (_pressureUnit==ATM) 	return _getPressureATM();
 		if (_pressureUnit==PSI)	return _getPressurePSI();
 	}
 	float FlowIO::getPressure(Unit pUnit){
-		if(_i2cInitialized==false) return 8888.0f;
+		if(_i2cInitialized==false){
+			_errorCode = 223;
+			return 888.8f;
+		} 
 		if(pUnit==PSI) return _getPressurePSI();
 		if(pUnit==HPA) return _getPressureHPA();
 		if(pUnit==ATM) return _getPressureATM();
@@ -239,7 +245,7 @@ In the API functions, we can only use InletValve and OutletValve terms, only in 
   		_errorCode = errorCode;
   	}
 
-//COMMUNICATION API: THree character based control. This is an implementation of our communication protocol at the library level. By invoking the "command()" 
+//COMMUNICATION API: 3-byte based control. This is an implementation of our communication protocol at the library level. By invoking the "command()" 
 	//function you are able to do everything that API2 is able to do, and more, just based on what arguments you provide. The first argument 'action' is 
 	//describing what to do. The second argument is describing on which ports that action is to be performed based on the position and 
 	//value of the individual bits, namely the first 5 bits. The third parameter is the PWM value if applicable.
