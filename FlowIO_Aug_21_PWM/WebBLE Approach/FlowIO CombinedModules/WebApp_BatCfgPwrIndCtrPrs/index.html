@@ -17,18 +17,6 @@
         width: 50%;
       }
     </style>
-    <!--JavaScript Language Extension-->
-    <script src="toBinaryString.js"></script>
-    <!--Services-->
-    <script src="batteryService.js"></script>
-    <script src="configService.js"></script>
-    <script src="powerOffService.js"></script>
-    <script src="indicatorService.js"></script>
-    <script src="controlService.js"></script>
-    <script src="pressureService.js"></script>
-    <!--All service JS files must beloaded before the conditions.js-->
-    <script src="conditions.js"></script>
-    <script src="connectBle.js"></script>
   </head>
   <body>
     <div class="flexContainer">
@@ -107,6 +95,9 @@
         <button id="stop_btn" onclick="stopAction()" type="button" disabled>Stop Action</button>
         <button id="stopall_btn" onclick="stopAllActions()" type="button" disabled>Stop All Actions</button>
 
+        <p>(+) Pump PWM:  <input type="range" id="pwm_i" min="100" max="255" value="255" disabled> <span id="pwm_i_label"></span></p>
+        <p>(-) Pump PWM:  <input type="range" id="pwm_o" min="100" max="255" value="255" disabled> <span id="pwm_o_label"></span></p>
+
       </div><!--End Control section-->
         <hr>
       <div><!--Begin Hardware State section-->
@@ -163,4 +154,17 @@
     </div>
     </div>
   </body>
+  <!--Load all the JS files at AFTER the HTML body so you can access HTML elements -->
+  <!--JavaScript Language Extension-->
+  <script src="toBinaryString.js"></script>
+  <!--Services-->
+  <script src="batteryService.js"></script>
+  <script src="configService.js"></script>
+  <script src="powerOffService.js"></script>
+  <script src="indicatorService.js"></script>
+  <script src="controlService.js"></script>
+  <script src="pressureService.js"></script>
+  <!--All service JS files must beloaded before the conditions.js-->
+  <script src="conditions.js"></script>
+  <script src="connectBle.js"></script>
 </html>

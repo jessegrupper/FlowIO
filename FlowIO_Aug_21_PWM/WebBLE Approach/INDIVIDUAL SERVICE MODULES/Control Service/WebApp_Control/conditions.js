@@ -30,6 +30,8 @@ function enableControls(){
   document.querySelector('#release_btn').disabled = false;
   document.querySelector('#stop_btn').disabled = false;
   document.querySelector('#stopall_btn').disabled = false;
+  document.querySelector('#pwm_i').disabled = false;
+  document.querySelector('#pwm_o').disabled = false;
 }
 function disableControls(){
   document.querySelector('#disconnect_btn').disabled = true;
@@ -43,6 +45,8 @@ function disableControls(){
   document.querySelector('#release_btn').disabled = true;
   document.querySelector('#stop_btn').disabled = true;
   document.querySelector('#stopall_btn').disabled = true;
+  document.querySelector('#pwm_i').disabled = true;
+  document.querySelector('#pwm_o').disabled = true;
 }
 function enableReconnectBtn(){
   document.querySelector('#reconnect_btn').disabled = false;

@@ -6,10 +6,9 @@
 FlowIO flowio;
 
 BLEService controlService;
-BLECharacteristic chrCommand;
-BLECharacteristic chrHardwareState;
-
-uint8_t cmd[2]; //holds the 2-byte command
+  BLECharacteristic chrCommand;
+  BLECharacteristic chrHardwareState;
+  uint8_t cmd[3]; //holds the command. cmd[0]=action, cmd[1]=port, cmd[2]=pwm.
 
 void setup() {
   Serial.begin(9600);
@@ -52,8 +51,9 @@ void connect_callback(uint16_t conn_handle){
   Serial.println("Connected");
   cmd[0] = '!';
   cmd[1] = 0b00011111;
+  cmd[3] = 0; //this is irrelevant for '!'. But we are sending the full cmd array anyways to BLE.
   flowio.command(cmd[0],cmd[1]);
-  chrCommand.write(cmd,2);
+  chrCommand.write(cmd,3); //We are writing the full 3-byte cmd array. 
   chrHardwareState.notify16(flowio.getHardwareState());
 }
 void disconnect_callback(uint16_t conn_handle, uint8_t reason){

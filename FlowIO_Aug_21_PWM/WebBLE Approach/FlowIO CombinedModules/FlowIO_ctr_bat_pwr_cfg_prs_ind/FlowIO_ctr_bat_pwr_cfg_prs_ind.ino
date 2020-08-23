@@ -8,7 +8,7 @@ FlowIO flowio;
 BLEService controlService;
   BLECharacteristic chrCommand;
   BLECharacteristic chrHardwareState;
-  uint8_t cmd[2]; //holds the 2-byte command
+  uint8_t cmd[3]; //holds the command. cmd[0]=action, cmd[1]=port, cmd[2]=pwm.
 BLEService batteryService;
   BLECharacteristic chrBattPercentage;
 BLEService powerOffService;
@@ -34,10 +34,7 @@ BLEService indicatorService;
 void setup() {
   Serial.begin(9600); //remove the serial printouts.
   flowio = FlowIO(GENERAL); //This must be done BEFORE any Bluefruit commands!
-  if(flowio.activateSensor()==false){
-    flowio.redLED(HIGH);
-    flowio.raiseError(222);
-  }
+  if(flowio.activateSensor()==false) flowio.redLED(HIGH);
   analogReference(AR_INTERNAL_3_0);   // Set the analog reference to 3.0V (default = 3.6V) b/c battery voltage may drop to <3.6V and then default will become inaccurate.
   analogReadResolution(12);   // Set the resolution to 12-bit (0..4095). Can be 8, 10, 12 or 14
   Bluefruit.autoConnLed(true);   // Setup the BLE LED to be enabled on CONNECT
@@ -100,9 +97,10 @@ void connect_callback(uint16_t conn_handle){
   Serial.println("Connected");
   cmd[0] = '!';
   cmd[1] = 0b00011111;
+  cmd[3] = 0; //this is irrelevant for '!'. But we are sending the full cmd array anyways to BLE.
   flowio.command(cmd[0],cmd[1]);
   //You can replace the above 3 lines with: flowio.stopAction(0x00011111);
-  chrCommand.write(cmd,2);
+  chrCommand.write(cmd,3); //we are writing the full 3-byte array. 
   chrHardwareState.notify16(flowio.getHardwareState());
   chrBattPercentage.notify8(getBatteryPercentage());
   chrConfig.notify8(flowio.getConfig());

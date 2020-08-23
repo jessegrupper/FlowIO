@@ -45,6 +45,8 @@ function enableControls(){
   document.querySelector('#release_btn').disabled = false;
   document.querySelector('#stop_btn').disabled = false;
   document.querySelector('#stopall_btn').disabled = false;
+  document.querySelector('#pwm_i').disabled = false;
+  document.querySelector('#pwm_o').disabled = false;
   document.querySelector('#getPressure_btn').disabled = false;
   document.querySelector('#requestNew_btn').disabled = false;
   document.querySelector('#setminmax_btn').disabled = false;
@@ -72,6 +74,8 @@ function disableControls(){
   document.querySelector('#release_btn').disabled = true;
   document.querySelector('#stop_btn').disabled = true;
   document.querySelector('#stopall_btn').disabled = true;
+  document.querySelector('#pwm_i').disabled = true;
+  document.querySelector('#pwm_o').disabled = true;
   document.querySelector('#getPressure_btn').disabled = true;
   document.querySelector('#requestNew_btn').disabled = true;
   document.querySelector('#setminmax_btn').disabled = true;
