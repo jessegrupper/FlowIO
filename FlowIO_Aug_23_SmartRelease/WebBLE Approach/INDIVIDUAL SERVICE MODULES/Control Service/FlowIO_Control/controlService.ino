@@ -11,7 +11,7 @@ void createControlService(void) {
   chrCommand.setProperties(CHR_PROPS_WRITE);
   chrCommand.setWriteCallback(onWrite_chrCommand);
   chrCommand.setPermission(SECMODE_OPEN, SECMODE_OPEN);
-  chrCommand.setFixedLen(2);
+  chrCommand.setFixedLen(3);
   chrCommand.begin();
 
   chrHardwareState = BLECharacteristic(chrHardwareStateUUID);
@@ -25,10 +25,17 @@ void createControlService(void) {
 //This is executed when a central device writes to the characteristic.
 void onWrite_chrCommand(uint16_t conn_hdl, BLECharacteristic* chr, uint8_t* data, uint16_t len) {
   Serial.println("Value Written");  
+  //data[0]=action, data[1]=port, data[2]=pwm
   if(len==2){
     Serial.print(data[0],BIN);
     Serial.println(data[1],BIN);
     flowio.command(data[0],data[1]);
+  }
+  else if(len==3){ //TODO: I need to know which byte is what.
+    Serial.print(data[0],BIN);
+    Serial.println(data[1],BIN);
+    Serial.println(data[2],BIN);
+    flowio.command(data[0],data[1],data[2]);
   }
   chrHardwareState.notify16(flowio.getHardwareState());
 }

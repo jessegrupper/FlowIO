@@ -45,15 +45,26 @@
 		}
 	}
 	void FlowIO::startRelease(uint8_t ports){
-		//TODO: Determine which valve to open depending on whether the pressure is above or below ATM. Check if there is an error, and if yes the 
-		//simply open the outlet valve if the pressure cannot be read.
 		stopAction(ports);		
 		if(ports<<3 != 0){		
 			setPorts(ports);
-			if(_config == GENERAL || _config == INFLATION_PARALLEL || _config == INFLATION_SERIES)
+			if(_config == INFLATION_PARALLEL || _config == INFLATION_SERIES)
 				openOutletValve();  //In the inflation configurations, the outlet valve is the pressure release valve as it's not connected.
-			else{
+			else if(_config == VACUUM_PARALLEL || _config == VACUUM_SERIES){
 				openInletValve();	//In the vacuum configurations, the inlet valve is the pressure release valve as it's not connected.
+			}
+			else if(_config == GENERAL){ //Determine which valve to open based on the pressure value.
+				if(getHardwareStateOf(SENSOR)==true){
+					float p = _getPressurePSI();
+					delay(10); //leave some time for the valve to open.
+					float pAtmospheric = 14.53;
+					if(p>=pAtmospheric) openOutletValve();
+					else if(p<pAtmospheric) openInletValve();
+					//TODO: Check if this also works OK for cases where we exceed the max pressure
+					//and for cases where the sensor is activated but a pressure is not read fine.
+				}
+				//If the pressure sensor has not been activated, then open the outlet valve.
+				else openOutletValve();
 			}
 		}
 	}

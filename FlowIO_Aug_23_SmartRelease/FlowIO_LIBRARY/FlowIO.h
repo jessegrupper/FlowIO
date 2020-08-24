@@ -30,6 +30,11 @@ enum Configuration : uint8_t{ //pneumatic configuration mode
 	GENERAL, INFLATION_SERIES, VACUUM_SERIES, INFLATION_PARALLEL, VACUUM_PARALLEL
 };
 
+enum Component : uint8_t{
+	PORT1, PORT2, PORT3, PORT4, PORT5, INLET, OUTLET, PUMP1, PUMP2, LEDRED, LEDBLUE, SENSOR
+   //bit0, bit1,  bit2,  bit3,  bit4,  bit5,  bit6,   bit7,  bit8,  bit8,   bit10,   bit11.
+};
+
 class FlowIO{
 private:
 	uint8_t _pumpPins[2]={3,4};
@@ -51,26 +56,26 @@ private:
 
     uint16_t _hardwareState = 0; /*this 16-bit variable will hold all info about what all the
     hardware is currently doing. Each bit corresponds to a hardware feature as follows:
-    |---|-------------|---------|
-    |bit| assigend to |'1' means|
-    |---|-------------|---------|
-    | 0 | port1 Valve |	open 	|
-    | 1 | port2 Valve | onen 	|
-    | 2 | port3 Valve | open 	|
-    | 3 | port4 Valve | open 	|
-    | 4 | port5 Valve | open 	|
-    | 5 | inlet Valve | open 	|
-    | 6 | outlet Valv | open 	|
-    | 7 | pump1       | Active 	|
-    | 8 | pump2       | Active 	|
-    | 9 | red led     | ON 		|
-    | 10| blue led    | ON 		|
-    | 11| Pres sensor | Active 	|
-    | 12|             |			|
-    | 13|             |			|
-    | 14|             |			|
-    | 15|             |			|
-    |---|-------------|---------|
+     _______________________
+    |bit| Component |'1' is |
+    |---|-----------|-------|
+    | 0 |  PORT1    | open 	|
+    | 1 |  PORT2    | onen 	|
+    | 2 |  PORT3    | open 	|
+    | 3 |  PORT4    | open 	|
+    | 4 |  PORT5    | open 	|
+    | 5 |  INLET    | open 	|
+    | 6 |  OUTLET   | open 	|
+    | 7 |  PUMP1    | Active|
+    | 8 |  PUMP2    | Active|
+    | 9 |  LEDRED   | ON 	|
+    | 10|  LEDBLUE  | ON 	|
+    | 11|  SENSOR   | Active|
+    | 12|           |		|
+    | 13|           |		|
+    | 14|           |		|
+    | 15|           |		|
+    |---|-----------|-------|
     */
 
     uint8_t _errorCode = 0; //this will change value if an error occurs.
@@ -115,6 +120,8 @@ public:
 
 	//INDICATORS
 	uint16_t getHardwareState();
+	bool getHardwareStateOf(uint8_t bitNumber);
+	bool getHardwareStateOf(Component name);
 	uint8_t readError();
 	void raiseError(uint8_t errorCode);
 	void blueLED(bool power);

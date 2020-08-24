@@ -11,7 +11,7 @@
 		_i2cInitialized=true; //Once this is set to true, there is nothing to set it back to false.
 			//this is the only problem with this, apparent only if someone calls the i2c .end() funtion
 			//and then tries to call the .getPressure() function without calling activateSensor() beforehand.
-			//In tht case, the system will hang, but a user would typically never need to ever call .end().
+			//In that case, the system will hang, but a user would typically never need to ever call .end().
 		delay(10);	
 		statusByte = _getStatusByte();
 		if(statusByte == 0b01000000){

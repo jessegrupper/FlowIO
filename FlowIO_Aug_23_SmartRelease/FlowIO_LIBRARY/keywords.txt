@@ -35,6 +35,7 @@ openPorts		KEYWORD2
 closePorts		KEYWORD2
 
 getHardwareState	KEYWORD2
+getHardwareStateOf	KEYWORD2
 
 raiseError		KEYWORD2
 readError		KEYWORD2
