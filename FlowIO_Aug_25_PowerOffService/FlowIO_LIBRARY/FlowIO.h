@@ -103,7 +103,7 @@ public:
 
 	//DRIVER: functions to control individual pneumatic elements
 	void stopPump(uint8_t pumpNumber); //sets the pwm value to 0.
-	void startPump(uint8_t pumpNumber, uint8_t pwmValue); //sets the pumpt to a PWM value
+	void startPump(uint8_t pumpNumber, uint8_t pwmValue=255); //sets the pumpt to a PWM value
 	void openInletValve();
 	void closeInletValve();
 	void openOutletValve();
@@ -113,7 +113,7 @@ public:
 	void closePorts(uint8_t ports); //Closes ports with 1. Leaves the ports with 0 unchanged.
 
 	//COMMAND CONTROL
-	//TODO: The command based control can only return pressure, but has no ways of 
+	//TODO: The command based control can only return pressure, but has no ways of
 	// returning the hardware status. May this function can simply return a pointer,
 	//and depending on the request that pointer can point to an int, float, or null.
 	float command(uint8_t action, uint8_t ports, uint8_t pwmValue=255);
@@ -126,7 +126,7 @@ public:
 	void raiseError(uint8_t errorCode);
 	void blueLED(bool power);
 	void redLED(bool power);
-	void powerOFF();	
+	void powerOFF();
 
 	//EXTRAS: Time Dependent Methods. (Blocking)
 	void inflateT(uint8_t ports, int millisec, uint8_t pwmValue=255); //blocking function
