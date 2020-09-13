@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>GPIO</title>
+    <meta charset="utf-8">
+
+  </head>
+  <body>
+    <div><!--Begin Connect / Disconnect section-->
+      <button id="connect_btn" onclick="onConnectButtonClick()" type="button" autofocus>CONNECT</button>
+      <button id="disconnect_btn" onclick="onDisconnectButtonClick()" type="button" disabled>DISCONNECT</button>
+      <button id="reconnect_btn" onclick="reconnect()" type="button" disabled>ReConnect</button>
+      <hr>
+    </div><!--End Connect / Disconnect section-->
+    <div><!--Begin Pin 2 Control-->
+      <h2>Digital</h2>
+      <button onclick="writeDigital(2,0)" id="low_btn" type="button" disabled>LOW</button>
+      <button onclick="writeDigital(2,1)" id="high_btn" type="button" disabled>HIGH</button>
+      <button onclick="readDigital(2,'INPUT')" id="readDigital_btn" type="button" disabled>READ Digital</button>
+      <button onclick="readDigital(2,`INPUT_PULLUP`)" id="readDigitalPullup_btn" type="button" disabled>READ Digital (PULLUP)</button>
+      <br>
+      <h2>Analog</h2>
+      <button onclick="readAnalog(2,'INPUT')" id="readAnalog_btn" type="button" disabled>READ Analog</button>
+      <button onclick="readAnalog(2,'INPUT_PULLUP')" id="readAnalogPullup_btn" type="button" disabled>READ Analog (PULLUP)</button>
+      <br>
+      <h2>PWM</h2>
+      <button onclick="writePWM(2,100)" id="writePwm_btn" type="button" disabled>PWM (20)</button>
+      <br>
+      <h2>Notify on Change</h2>
+      <button onclick="readAnalogNotify(2,'INPUT')" id="readAnalog_notify_btn" type="button" disabled>READ Analog Start</button>
+      <button onclick="readDigitalNotify(2,'INPUT')" id="readDigital_notify_btn" type="button" disabled>READ Digital Start</button>
+      <br>
+    </div><!--End Pin2 Control-->
+    <div><!--Begin Log-->
+      <br>
+      <button id="clearLog_btn" onclick="clearLog()" type="button">Clear Log</button>
+      <pre id="log"></pre>
+    </div><!--End Log-->
+  </body>
+  <script src="toBinaryString.js"></script>
+  <script src="gpioService.js"></script>
+  <!--All service JS files must beloaded before the conditions.js-->
+  <script src="conditions.js"></script>
+  <script src="connectBle.js"></script>
+</html>

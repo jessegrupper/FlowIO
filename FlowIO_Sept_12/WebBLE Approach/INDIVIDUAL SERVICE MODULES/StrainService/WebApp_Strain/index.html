@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Strain</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  </head>
+  <body>
+    <div><!--Begin Connect / Disconnect section-->
+      <button id="connect_btn" onclick="onConnectButtonClick()" type="button" autofocus>CONNECT</button>
+      <button id="disconnect_btn" onclick="onDisconnectButtonClick()" type="button" disabled>DISCONNECT</button>
+      <button id="reconnect_btn" onclick="reconnect()" type="button" disabled>ReConnect</button>
+
+      <hr>
+    </div><!--End Connect / Disconnect section-->
+    <div><!--Begin Strain section-->
+      <h2>Strain</h2>
+      <button id="strain_refresh_btn" onclick="getStrain()" type="button" disabled>Refresh Strain</button>
+      <span id="strainVal"></span>
+    </div><!--End Strain section-->
+    <div><!--Begin Log-->
+      <br>
+      <button id="clearLog_btn" onclick="clearLog()" type="button">Clear Log</button>
+      <pre id="log"></pre>
+    </div><!--End Log-->
+  </body>
+  <script src="strainService.js"></script>
+  <!--All service JS files must beloaded before the conditions.js-->
+  <script src="conditions.js"></script>
+  <script src="connectBle.js"></script>
+</html>
