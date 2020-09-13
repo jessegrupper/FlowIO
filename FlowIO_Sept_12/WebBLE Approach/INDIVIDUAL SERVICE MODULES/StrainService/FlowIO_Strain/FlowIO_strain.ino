@@ -23,12 +23,12 @@ void setup(){
   Bluefruit.setName(DEVICE_NAME);
   Bluefruit.Periph.setConnectCallback(connect_callback);
 
-  createStrainService(); //this is defined in "batteryService.ino"
+  createStrainService(); //this is defined in "strainService.ino"
   startAdvertising();   // Set up and start advertising
 }
 
 void loop(){
-  updateStrainEvery(100); //100ms update interval
+  updateStrainEvery(10); //100ms update interval
   waitForEvent();  // Request CPU to enter low-power mode until an event/interrupt occurs
 }
 
@@ -46,6 +46,7 @@ void startAdvertising(void){
 }
 
 void connect_callback(uint16_t conn_handle){ // callback invoked when central connects
-  chrStrain.notify32(getStrain32bit());
+  setInitVoltagesAvg(); 
+  updateStrainEvery(0); //sends a notification right away with the normalized voltage values.
   Serial.println("Strain value sent.");
 }

@@ -20,7 +20,7 @@ async function initStrainService(){
     await chrStrain.startNotifications();
     chrStrain.addEventListener('characteristicvaluechanged', event => { //an event is returned
       //TODO: Parse the 32 bit value into 4 8bit values.
-      log('pin28: ' + event.target.value.getUint8(0) + '\tpin5: ' + event.target.value.getUint8(1) + '\tpin4: ' + event.target.value.getUint8(2) + '\tpin3: ' + event.target.value.getUint8(3)); //byte 0 (lowest 8bits)
+      log('pin29: ' + event.target.value.getUint8(0) + '\tpin5: ' + event.target.value.getUint8(1) + '\tpin4: ' + event.target.value.getUint8(2) + '\tpin3: ' + event.target.value.getUint8(3)); //byte 0 (lowest 8bits)
       //document.querySelector('#strainVal').innerHTML = event.target.value.getUint8(0) + ' zeroth';
       //console.log(event); //we can use this in the console to see all the goodies in the event object.
     });
